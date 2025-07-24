@@ -337,6 +337,16 @@ async function simulateHumanTyping(sock, jid) {
   }
 }
 
+// Função utilitária para normalizar texto (remove acentos, espaços extras, lowercase)
+function normalizeText(str) {
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // remove acentos
+    .replace(/\s+/g, ' ') // espaços múltiplos para um só
+    .trim()
+    .toLowerCase();
+}
+
 // Controle de spam
 function isSpamming(userId) {
   const now = Date.now();
@@ -477,195 +487,31 @@ async function processMessageWithDelay(sock, msg, user) {
   // Adiciona o nome do usuário aos dados
   user.nome = nome;
 
-  // Logs detalhados
-  console.log(`[${new Date().toISOString()}] Nova mensagem:`);
-  console.log(`De: ${sender}`);
-  console.log(`Nome: ${nome}`);
-  console.log(`Conteúdo: "${messageContent}"`);
-  console.log(`📝 Tipo de mensagem:`, {
-    conversation: !!msg.message.conversation,
-    extendedText: !!msg.message.extendedTextMessage,
-    image: !!msg.message.imageMessage,
-    video: !!msg.message.videoMessage,
-    document: !!msg.message.documentMessage
-  });
-  console.log(`📋 Estrutura da mensagem:`, Object.keys(msg.message));
-
-  // Se usuário está desativado, só responde à mensagem específica
-  if (user.state === 'inactive') {
-    console.log('🔍 Verificando ativação...');
-    console.log('📨 Mensagem recebida:', `"${messageContent.trim()}"`);
-    console.log('🎯 Mensagem esperada:', `"${activationMessage.trim()}"`);
-    
-    // Logs detalhados para debug
-    console.log('📏 Comprimento recebida:', messageContent.trim().length);
-    console.log('📏 Comprimento esperada:', activationMessage.trim().length);
-    console.log('🔤 Caracteres recebidos:', Array.from(messageContent.trim()).map(c => c.charCodeAt(0)));
-    console.log('🔤 Caracteres esperados:', Array.from(activationMessage.trim()).map(c => c.charCodeAt(0)));
-    
-    // Decodifica a mensagem recebida (remove codificação URL)
-    const decodedMessage = decodeURIComponent(messageContent.trim());
-    console.log('🔓 Mensagem decodificada:', `"${decodedMessage}"`);
-    
-    console.log('✅ São iguais (original)?', messageContent.trim() === activationMessage.trim());
-    console.log('✅ São iguais (decodificada)?', decodedMessage === activationMessage.trim());
-    
-    // Verifica se a mensagem contém as palavras-chave principais
-    const keywords = ['comunidade de elite', 'produtos premium', 'condições especiais'];
-    const messageLower = decodedMessage.toLowerCase();
-    const hasKeywords = keywords.every(keyword => messageLower.includes(keyword));
-    
-    console.log('🔑 Contém palavras-chave?', hasKeywords);
-    
-    // Verificação mais flexível - remove espaços extras e normaliza
-    const normalizedReceived = messageContent.trim().replace(/\s+/g, ' ').toLowerCase();
-    const normalizedExpected = activationMessage.trim().replace(/\s+/g, ' ').toLowerCase();
-    const normalizedMatch = normalizedReceived === normalizedExpected;
-    
-    console.log('🔄 Normalizadas iguais?', normalizedMatch);
-    console.log('🔄 Recebida normalizada:', `"${normalizedReceived}"`);
-    console.log('🔄 Esperada normalizada:', `"${normalizedExpected}"`);
-    
-    // Verificação final mais robusta
-    const shouldActivate = messageContent.trim() === activationMessage.trim() || 
-                          decodedMessage === activationMessage.trim() || 
-                          hasKeywords || 
-                          normalizedMatch ||
-                          messageContent.toLowerCase().includes('comunidade de elite') ||
-                          messageContent.toLowerCase().includes('produtos premium') ||
-                          messageContent.toLowerCase().includes('condições especiais');
-    
-    if (shouldActivate) {
-      console.log('🚀 ATIVANDO O BOT!');
-      // Ativa o bot
-      user.state = 'active';
-      user.answers = {};
-      await db.write();
-      
-      // Delay inicial para parecer humano
-      await new Promise(resolve => setTimeout(resolve, humanDelay()));
-      
-      // Envia convite elite
-      await simulateHumanTyping(sock, sender);
-      await sock.sendMessage(sender, { text: eliteInvite.text(nome) });
-    } else {
-      console.log('❌ Mensagem não ativou o bot');
-      console.log('💡 Dica: Verifique se a mensagem contém as palavras-chave principais');
-    }
-    // Se não for a mensagem específica, não responde nada
-    return;
-  }
-
-  // Delay inicial para parecer humano
-  await new Promise(resolve => setTimeout(resolve, humanDelay()));
-
-  // Se usuário está no convite elite
-  if (!user.answers.elite_invite) {
-    // Se respondeu convite
-    if (eliteInvite.options.includes(messageContent.trim().toUpperCase())) {
-      const resp = messageContent.trim().toUpperCase();
-      user.answers.elite_invite = resp;
-      await db.write();
-      if (resp === 'B') {
-        await simulateHumanTyping(sock, sender);
-        await sock.sendMessage(sender, { text: byeMsg(nome) });
-        // Desativa o bot
-        user.state = 'inactive';
-        await db.write();
-        return;
-      } else {
-        // Vai para a primeira pergunta
-        await simulateHumanTyping(sock, sender);
-        await sock.sendMessage(sender, { text: questions[0].text });
-        return;
-      }
-    } else {
-      // Resposta inválida
-      await simulateHumanTyping(sock, sender);
-      await sock.sendMessage(sender, { text: explainInvalid(eliteInvite) });
-      return;
-    }
-  }
-
-  // Descobre o passo do usuário
-  const step = getUserStep(user);
-
-  // Se já respondeu tudo
-  if (step >= questions.length) {
-    // Salva no CSV antes de enviar a mensagem final
-    saveToCSV(user);
-    
-    // Mensagem de análise e aprovação
-    await simulateHumanTyping(sock, sender);
-    await sock.sendMessage(sender, { text: analyzingMsg });
-    await new Promise(resolve => setTimeout(resolve, 10000));
-    await simulateHumanTyping(sock, sender);
-    const randomFinalElite = finalEliteMessages[Math.floor(Math.random() * finalEliteMessages.length)];
-    await sock.sendMessage(sender, { text: randomFinalElite(nome) });
-    // Desativa o bot após finalizar
-    user.state = 'inactive';
+  // Normaliza mensagens para comparação
+  const normalizedReceived = normalizeText(messageContent);
+  const normalizedExpected = normalizeText(activationMessage);
+  // Verifica se a mensagem ativa o bot
+  const keywords = ['comunidade de elite', 'produtos premium', 'condicoes especiais'];
+  const hasKeywords = keywords.every(keyword => normalizedReceived.includes(normalizeText(keyword)));
+  const shouldActivate =
+    normalizedReceived === normalizedExpected ||
+    hasKeywords ||
+    normalizedReceived.includes('comunidade de elite') ||
+    normalizedReceived.includes('produtos premium') ||
+    normalizedReceived.includes('condicoes especiais');
+  if (shouldActivate) {
+    // Ativa ou reinicia o fluxo
+    user.state = 'active';
+    user.answers = {};
     await db.write();
-    return;
-  }
-
-  // Validação da resposta
-  const q = questions[step];
-  const body = messageContent.trim();
-
-  if (!validateAnswer(q, body)) {
-    await simulateHumanTyping(sock, sender);
-    await sock.sendMessage(sender, { text: explainInvalid(q) });
-    // NÃO reenvia a pergunta automaticamente - deixa o usuário responder
-    return;
-  }
-
-  // Verifica se escolheu sair
-  if (body.toUpperCase() === 'S' || (q.multi && body.toUpperCase().includes('S'))) {
-    await simulateHumanTyping(sock, sender);
-    await sock.sendMessage(sender, { text: exitMsg(nome) });
-    // Desativa o bot
-    user.state = 'inactive';
-    await db.write();
-    return;
-  }
-
-  // Salva resposta
-  user.answers[q.key] = normalizeAnswer(q, body);
-  await db.write();
-
-  // Próxima pergunta ou finalização
-  if (step + 1 < questions.length) {
-    // Confirmação variada apenas se há próxima pergunta
-    const randomConfirmation = confirmations[Math.floor(Math.random() * confirmations.length)];
-    await simulateHumanTyping(sock, sender);
-    await sock.sendMessage(sender, { text: randomConfirmation });
-    
-    // Mensagem de transição personalizada
-    let transitionMsg;
-    if (step === 0) transitionMsg = afterQ1[Math.floor(Math.random() * afterQ1.length)](nome);
-    if (step === 1) transitionMsg = afterQ2[Math.floor(Math.random() * afterQ2.length)](nome);
-    if (step === 2) transitionMsg = afterQ3[Math.floor(Math.random() * afterQ3.length)](nome);
-    if (step === 3) transitionMsg = afterQ4[Math.floor(Math.random() * afterQ4.length)](nome);
-    if (step === 4) transitionMsg = afterQ5[Math.floor(Math.random() * afterQ5.length)](nome);
-    if (step === 5) transitionMsg = afterQ6[Math.floor(Math.random() * afterQ6.length)](nome);
-    if (step === 6) transitionMsg = afterQ7[Math.floor(Math.random() * afterQ7.length)](nome);
-    if (transitionMsg) { await simulateHumanTyping(sock, sender); await sock.sendMessage(sender, { text: transitionMsg }); }
-
     await new Promise(resolve => setTimeout(resolve, humanDelay()));
     await simulateHumanTyping(sock, sender);
-    await sock.sendMessage(sender, { text: questions[step + 1].text });
-  } else {
-    // Última pergunta - salva no CSV e vai direto para análise
-    saveToCSV(user);
-    
-    await simulateHumanTyping(sock, sender);
-    await sock.sendMessage(sender, { text: analyzingMsg });
-    await new Promise(resolve => setTimeout(resolve, 10000));
-    await simulateHumanTyping(sock, sender);
-    await sock.sendMessage(sender, { text: approvedMsg(nome) });
-    // Desativa o bot após finalizar
-    user.state = 'inactive';
-    await db.write();
+    await sock.sendMessage(sender, { text: eliteInvite.text(nome) });
+    return;
+  }
+  // Se não ativou, responde explicando
+  if (user.state === 'inactive') {
+    await sock.sendMessage(sender, { text: `Para iniciar o atendimento, envie a mensagem:\n\n"${activationMessage}"` });
   }
 }
 

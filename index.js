@@ -608,6 +608,7 @@ async function processMessageWithDelay(sock, msg, user) {
         // Finaliza, salva no banco e agradece
         await simulateHumanTyping(sock, sender);
         await sock.sendMessage(sender, { text: '⏳ Por favor aguarde, estamos analisando seu perfil... 🔍✨' });
+        console.log('[DEBUG] Dados enviados para o banco:', user);
         setTimeout(async () => {
           await simulateHumanTyping(sock, sender);
           await sock.sendMessage(sender, { text: `🎉 Parabéns ${nome}!!! Você foi aprovada para a nossa comunidade VIP, entre agora pelo link abaixo e fique por dentro de tudo sobre autocuidado, tudo em primeira mão! 💎\n\n👉 www.whatsapp.com.br/grupo 🔗` });

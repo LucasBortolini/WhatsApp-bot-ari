@@ -46,3 +46,4 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $conn->close(); 
+file_put_contents('debug.txt', print_r($_POST, true)); 

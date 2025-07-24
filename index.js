@@ -9,7 +9,7 @@ import qrcode from 'qrcode-terminal';
 import express from 'express';
 import fs from 'fs';
 import crypto from 'crypto';
-const saveToMySQL = require('./saveToMySQL');
+import saveToMySQL from './saveToMySQL.js';
 
 dotenv.config();
 

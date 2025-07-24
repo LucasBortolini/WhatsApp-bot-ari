@@ -20,4 +20,4 @@ async function saveToMySQL(userData) {
   }
 }
 
-module.exports = saveToMySQL; 
+export default saveToMySQL; 

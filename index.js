@@ -562,19 +562,25 @@ async function processMessageWithDelay(sock, msg, user) {
 
   // Processa resposta da Comunidade Secreta
   if (user.state === 'comunidade_secreta') {
+    console.log('[DEBUG] Entrou no estado comunidade_secreta');
     const resposta = normalizeText(messageContent).trim().toUpperCase();
+    console.log('[DEBUG] Resposta recebida:', resposta);
     if (resposta === 'A') {
+      console.log('[DEBUG] Usuário respondeu A, iniciando questionário');
       user.state = 'active';
       await db.write();
       await simulateHumanTyping(sock, sender);
       await sock.sendMessage(sender, { text: questions[0].text });
       return;
     } else if (resposta === 'B') {
+      console.log('[DEBUG] Usuário respondeu B, encerrando fluxo');
       user.state = 'inactive';
       await db.write();
       await simulateHumanTyping(sock, sender);
       await sock.sendMessage(sender, { text: 'Tudo bem! 😊 Quando quiser, estaremos por aqui. Tenha um ótimo dia! ✨👋' });
       return;
+    } else {
+      console.log('[DEBUG] Resposta não reconhecida no estado comunidade_secreta');
     }
   }
 }

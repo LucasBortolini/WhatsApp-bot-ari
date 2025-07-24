@@ -550,7 +550,7 @@ async function processMessageWithDelay(sock, msg, user) {
 
   // FLUXO: Aceitar 'já garanti o meu' (com variações/erros) SOMENTE se user.state === 'aguardando_confirmacao'
   if (user.state === 'aguardando_confirmacao' && normalizeText(messageContent).replace(/[^a-zA-Z]/g, '').includes('jagarantiomeu')) {
-    user.state = 'active';
+    user.state = 'comunidade_secreta';
     user.answers = {};
     await db.write();
     await simulateHumanTyping(sock, sender);
@@ -558,6 +558,24 @@ async function processMessageWithDelay(sock, msg, user) {
     const saudacao = `${nome}... que energia maravilhosa ter você aqui!\n\nSua mensagem me arrepiou. Isso significa que você não apenas garantiu seu produto, mas aceitou fazer parte de algo maior.\n\nVocê acaba de conquistar seu espaço na nossa Lista Premium de Autocuidado, uma seleção feita com todo cuidado para mulheres que entendem o valor de um ritual — e não apenas de um item.\n\nMas agora, tenho uma pergunta íntima e importante pra te fazer...\n\nVocê gostaria de ser avaliada para entrar na nossa Comunidade Secreta?\n\nEstamos reunindo um grupo altamente restrito de mulheres com perfis únicos, capazes de elevar o autocuidado a um novo patamar.\n\nLá dentro, você terá acesso a:\n\n✨ Experiências antecipadas — que ninguém mais terá\n🔐 Condições invisíveis ao público geral\n💎 Participação direta na construção dos próximos lançamentos\n💭 E um espaço íntimo, inspirador, onde o autocuidado vira um estilo de vida — não uma tendência.\n\nMas como tudo que é raro precisa ser preservado...\n\nAs vagas são limitadíssimas, e o processo de entrada exige uma pequena jornada seletiva.\n\nAlgo leve, rápido e especial — só pra termos certeza de que essa comunidade será composta pelas mentes e corações certos.\n\nSe você topar participar desse processo, me responda agora com:\n\nA - Quero participar!\nou\nB - Prefiro não participar por enquanto.\n\nEstou animada com o que podemos construir juntas. Mas só você pode dar o próximo passo.`;
     await sock.sendMessage(sender, { text: saudacao });
     return;
+  }
+
+  // Processa resposta da Comunidade Secreta
+  if (user.state === 'comunidade_secreta') {
+    const resposta = normalizeText(messageContent).trim().toUpperCase();
+    if (resposta === 'A') {
+      user.state = 'active';
+      await db.write();
+      await simulateHumanTyping(sock, sender);
+      await sock.sendMessage(sender, { text: questions[0].text });
+      return;
+    } else if (resposta === 'B') {
+      user.state = 'inactive';
+      await db.write();
+      await simulateHumanTyping(sock, sender);
+      await sock.sendMessage(sender, { text: 'Tudo bem! 😊 Quando quiser, estaremos por aqui. Tenha um ótimo dia! ✨👋' });
+      return;
+    }
   }
 
   // NOVO FLUXO: Saudação inicial ao receber 'já garanti o meu'

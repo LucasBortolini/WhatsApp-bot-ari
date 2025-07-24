@@ -1,0 +1,5 @@
+auth_info/
+package.json
+db.json
+node_modules/
+package-lock.json

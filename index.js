@@ -589,6 +589,12 @@ async function processMessageWithDelay(sock, msg, user) {
   // Novo fluxo do questionário
   if (user.state === 'active') {
     const step = getUserStep(user);
+    if (step === 0) {
+      // Envia a primeira pergunta
+      await simulateHumanTyping(sock, sender);
+      await sock.sendMessage(sender, { text: questions[0].text });
+      return;
+    }
     if (step > 0 && step <= questions.length) {
       // Salva a resposta anterior
       const prevQuestion = questions[step - 1];

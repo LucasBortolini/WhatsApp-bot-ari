@@ -40,3 +40,19 @@ sudo apt-get install -y nodejs
 
 ## Dúvidas?
 Se precisar de ajuda para deploy, configuração ou manutenção, consulte o README ou peça suporte ao desenvolvedor.
+
+## Como resetar a conexão do WhatsApp (ler novo QR Code)
+
+Se quiser desconectar o número atual e conectar outro, ou se der erro de autenticação:
+
+1. Rode o comando:
+   ```bash
+   node reset-auth.js
+   ```
+2. Depois, rode o bot normalmente:
+   ```bash
+   npm start
+   ```
+3. O bot vai pedir um novo QR Code para parear com o WhatsApp.
+
+---

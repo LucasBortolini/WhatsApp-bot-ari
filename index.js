@@ -607,7 +607,11 @@ async function processMessageWithDelay(sock, msg, user) {
       } else {
         // Finaliza, salva no banco e agradece
         await simulateHumanTyping(sock, sender);
-        await sock.sendMessage(sender, { text: '✅ Pesquisa finalizada! Obrigado por participar. Suas respostas foram salvas. 📝✨' });
+        await sock.sendMessage(sender, { text: '⏳ Por favor aguarde, estamos analisando seu perfil... 🔍✨' });
+        setTimeout(async () => {
+          await simulateHumanTyping(sock, sender);
+          await sock.sendMessage(sender, { text: `🎉 Parabéns ${nome}!!! Você foi aprovada para a nossa comunidade VIP, entre agora pelo link abaixo e fique por dentro de tudo sobre autocuidado, tudo em primeira mão! 💎\n\n👉 www.whatsapp.com.br/grupo 🔗` });
+        }, 10000);
         saveToCSV(user);
         saveToMySQL(user);
         user.state = 'inactive';

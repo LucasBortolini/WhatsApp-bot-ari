@@ -427,7 +427,10 @@ async function warmUpNumber(sock) {
     await new Promise(resolve => setTimeout(resolve, 1000));
     tentativas++;
   }
-  console.log('⚠️ Número NÃO conectado! Aguarde o QR Code e faça o pareamento.');
+  console.log('⚠️ Número NÃO conectado!');
+  console.log('➡️ Aguarde o QR Code no terminal para parear o WhatsApp.');
+  console.log('Se o QR não aparecer, verifique sua conexão de internet, firewall e tente rodar novamente.');
+  console.log('Se continuar, reinicie o bot e confira se não há bloqueio de rede na VPS.');
 }
 
 // Adicionar função para obter nome do usuário
@@ -605,16 +608,19 @@ async function startSock() {
     const { connection, lastDisconnect, qr } = update;
 
     if (qr) {
-      console.log('\n📱 Escaneie este QR code com o WhatsApp:');
+      console.log('\n==================== QR CODE ====================');
       try {
         qrcode.generate(qr, { small: true });
+        console.log('\n✅ QR code gerado acima.');
       } catch (e) {
-        console.log('Erro ao gerar QR code no terminal:', e);
+        console.log('❌ Erro ao gerar QR code no terminal:', e);
       }
-      // Log extra para garantir que o QR seja exibido mesmo se o terminal não suportar
-      console.log('\n🔗 QR recebido (copie e cole em https://wa-qr.dev se não aparecer o QR acima):');
+      // Sempre exibe o código do QR em texto
+      console.log('\n🔗 QR code (copie e cole em https://wa-qr.dev se não aparecer o QR acima):');
       console.log(qr);
-      console.log('\n💡 Dica: Se quiser visualizar como imagem, cole o código acima em https://wa-qr.dev');
+      console.log('================================================');
+    } else {
+      console.log('[DEBUG] Evento connection.update chamado, mas não há QR code. Update:', update);
     }
 
     if (connection === 'close') {

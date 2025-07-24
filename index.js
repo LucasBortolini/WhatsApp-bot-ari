@@ -71,8 +71,7 @@ app.get('/uptime', (req, res) => {
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🌐 Servidor web rodando na porta ${PORT}`);
-  console.log(`🔗 URL do Replit: https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
-  console.log(`🔗 URL alternativa: https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co:${PORT}`);
+  // Removido: logs de URL do Replit
   console.log(`✅ Servidor pronto para receber requisições!`);
 });
 

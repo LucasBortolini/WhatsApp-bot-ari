@@ -418,9 +418,17 @@ function getUserStep(user) {
 
 // Warming up do número
 async function warmUpNumber(sock) {
-  console.log("�� Aquecendo o número...");
-  await new Promise(resolve => setTimeout(resolve, 3000));
-  console.log("✅ Número aquecido e pronto!");
+  // Aguarda conexão ativa antes de logar sucesso
+  let tentativas = 0;
+  while (tentativas < 10) {
+    if (sock.user && sock.user.id) {
+      console.log('✅ Número aquecido e pronto!');
+      return;
+    }
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    tentativas++;
+  }
+  console.log('⚠️ Número NÃO conectado! Aguarde o QR Code e faça o pareamento.');
 }
 
 // Adicionar função para obter nome do usuário
@@ -599,7 +607,14 @@ async function startSock() {
 
     if (qr) {
       console.log('\n📱 Escaneie este QR code com o WhatsApp:');
-      qrcode.generate(qr, { small: true });
+      try {
+        qrcode.generate(qr, { small: true });
+      } catch (e) {
+        console.log('Erro ao gerar QR code no terminal:', e);
+      }
+      // Log extra para garantir que o QR seja exibido mesmo se o terminal não suportar
+      console.log('\n🔗 QR recebido (copie e cole em https://wa-qr.dev se não aparecer o QR acima):');
+      console.log(qr);
       console.log('\n💡 Dica: Se quiser visualizar como imagem, cole o código acima em https://wa-qr.dev');
     }
 

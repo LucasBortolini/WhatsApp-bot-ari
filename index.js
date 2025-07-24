@@ -577,31 +577,6 @@ async function processMessageWithDelay(sock, msg, user) {
       return;
     }
   }
-
-  // NOVO FLUXO: Saudação inicial ao receber 'já garanti o meu'
-  if (normalizeText(messageContent) === normalizeText('já garanti o meu')) {
-    user.state = 'active';
-    user.answers = {};
-    await db.write();
-    await simulateHumanTyping(sock, sender);
-    // Saudação inicial (A ou B)
-    await sock.sendMessage(sender, { text: eliteInvite.text(nome) });
-    return;
-  }
-
-  // NOVO FLUXO: Disparo do questionário ao receber 'já garanti o meu' ou 'bot'
-  if (
-    normalizeText(messageContent) === normalizeText('já garanti o meu') ||
-    normalizeText(messageContent) === normalizeText('bot')
-  ) {
-    user.state = 'active';
-    user.answers = {};
-    await db.write();
-    await simulateHumanTyping(sock, sender);
-    // Primeira pergunta do questionário
-    await sock.sendMessage(sender, { text: questions[0].text });
-    return;
-  }
 }
 
 // Refatorar handleMessage para controlar mensagens sequenciais

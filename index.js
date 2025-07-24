@@ -483,6 +483,8 @@ function explainInvalid(q) {
 // Função para processar mensagem com delay
 async function processMessageWithDelay(sock, msg, user) {
   const sender = msg.key.remoteJid;
+  // Log de depuração do estado e mensagem recebida
+  console.log('[DEBUG] Estado atual do usuário:', user.state, '| Mensagem recebida:', msg.message.conversation || msg.message.extendedTextMessage?.text || '');
   
   // Captura mensagem em diferentes formatos do WhatsApp
   let messageContent = '';

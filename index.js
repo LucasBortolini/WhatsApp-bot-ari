@@ -589,25 +589,34 @@ async function processMessageWithDelay(sock, msg, user) {
   // Novo fluxo do questionário
   if (user.state === 'active') {
     const step = getUserStep(user);
-    // Se for a ativação do fluxo, só envia a primeira pergunta
+    // Se for a ativação do fluxo e nenhuma resposta ainda, envia a primeira pergunta
     if (step === 0 && (normalizedReceived === normalizeText('A - Quero participar!') || normalizedReceived === normalizeText('A'))) {
       await simulateHumanTyping(sock, sender);
       await sock.sendMessage(sender, { text: questions[0].text });
       return;
     }
-    if (step > 0 && step <= questions.length) {
-      // Salva a resposta anterior
+    // Se for a primeira resposta (q1), salva e avança
+    if (step === 0) {
+      user.answers[questions[0].key] = messageContent.trim();
+      await db.write();
+      await simulateHumanTyping(sock, sender);
+      await sock.sendMessage(sender, { text: questions[1].text });
+      return;
+    }
+    // Se for as próximas perguntas
+    if (step > 0 && step < questions.length) {
       const prevQuestion = questions[step - 1];
       user.answers[prevQuestion.key] = messageContent.trim();
       await db.write();
-    }
-    if (step < questions.length) {
-      // Envia a próxima pergunta
       await simulateHumanTyping(sock, sender);
       await sock.sendMessage(sender, { text: questions[step].text });
       return;
-    } else {
-      // Finaliza, salva no banco e agradece
+    }
+    // Finaliza, salva no banco e agradece
+    if (step === questions.length) {
+      const prevQuestion = questions[step - 1];
+      user.answers[prevQuestion.key] = messageContent.trim();
+      await db.write();
       await simulateHumanTyping(sock, sender);
       await sock.sendMessage(sender, { text: '✅ Pesquisa finalizada! Obrigado por participar. Suas respostas foram salvas. 📝✨' });
       saveToCSV(user);

@@ -595,35 +595,25 @@ async function processMessageWithDelay(sock, msg, user) {
       await sock.sendMessage(sender, { text: questions[0].text });
       return;
     }
-    // Se for a primeira resposta (q1), salva e avança
-    if (step === 0) {
-      user.answers[questions[0].key] = messageContent.trim();
+    // Salva a resposta recebida na pergunta atual
+    if (step < questions.length) {
+      user.answers[questions[step].key] = messageContent.trim();
       await db.write();
-      await simulateHumanTyping(sock, sender);
-      await sock.sendMessage(sender, { text: questions[1].text });
-      return;
-    }
-    // Se for as próximas perguntas
-    if (step > 0 && step < questions.length) {
-      const prevQuestion = questions[step - 1];
-      user.answers[prevQuestion.key] = messageContent.trim();
-      await db.write();
-      await simulateHumanTyping(sock, sender);
-      await sock.sendMessage(sender, { text: questions[step].text });
-      return;
-    }
-    // Finaliza, salva no banco e agradece
-    if (step === questions.length) {
-      const prevQuestion = questions[step - 1];
-      user.answers[prevQuestion.key] = messageContent.trim();
-      await db.write();
-      await simulateHumanTyping(sock, sender);
-      await sock.sendMessage(sender, { text: '✅ Pesquisa finalizada! Obrigado por participar. Suas respostas foram salvas. 📝✨' });
-      saveToCSV(user);
-      saveToMySQL(user);
-      user.state = 'inactive';
-      await db.write();
-      return;
+      // Envia a próxima pergunta
+      if (step + 1 < questions.length) {
+        await simulateHumanTyping(sock, sender);
+        await sock.sendMessage(sender, { text: questions[step + 1].text });
+        return;
+      } else {
+        // Finaliza, salva no banco e agradece
+        await simulateHumanTyping(sock, sender);
+        await sock.sendMessage(sender, { text: '✅ Pesquisa finalizada! Obrigado por participar. Suas respostas foram salvas. 📝✨' });
+        saveToCSV(user);
+        saveToMySQL(user);
+        user.state = 'inactive';
+        await db.write();
+        return;
+      }
     }
   }
 }

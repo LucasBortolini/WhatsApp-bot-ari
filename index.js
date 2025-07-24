@@ -585,6 +585,32 @@ async function processMessageWithDelay(sock, msg, user) {
       console.log('[DEBUG] Resposta não reconhecida no estado comunidade_secreta');
     }
   }
+
+  // Novo fluxo do questionário
+  if (user.state === 'active') {
+    const step = getUserStep(user);
+    if (step > 0 && step <= questions.length) {
+      // Salva a resposta anterior
+      const prevQuestion = questions[step - 1];
+      user.answers[prevQuestion.key] = messageContent.trim();
+      await db.write();
+    }
+    if (step < questions.length) {
+      // Envia a próxima pergunta
+      await simulateHumanTyping(sock, sender);
+      await sock.sendMessage(sender, { text: questions[step].text });
+      return;
+    } else {
+      // Finaliza, salva no banco e agradece
+      await simulateHumanTyping(sock, sender);
+      await sock.sendMessage(sender, { text: '✅ Pesquisa finalizada! Obrigado por participar. Suas respostas foram salvas. 📝✨' });
+      saveToCSV(user);
+      saveToMySQL(user);
+      user.state = 'inactive';
+      await db.write();
+      return;
+    }
+  }
 }
 
 // Refatorar handleMessage para controlar mensagens sequenciais

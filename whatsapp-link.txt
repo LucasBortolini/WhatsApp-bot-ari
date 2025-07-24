@@ -1,0 +1,14 @@
+🔗 LINK DO WHATSAPP PARA ATIVAÇÃO DO BOT:
+
+Link original (com codificação):
+https://wa.me/5516991252033?text=Olá!%20Gostaria%20de%20receber%20mais%20informações%20sobre%20comunidade%20de%20elite,%20produtos%20premium%20e%20condições%20especiais!%20Aguardo%20seu%20retorno!
+
+Link otimizado (sem codificação):
+https://wa.me/5516991252033?text=Olá! Gostaria de receber mais informações sobre comunidade de elite, produtos premium e condições especiais! Aguardo seu retorno!
+
+📋 MENSAGEM QUE DEVE APARECER NO WHATSAPP:
+"Olá! Gostaria de receber mais informações sobre comunidade de elite, produtos premium e condições especiais! Aguardo seu retorno!"
+
+🎯 O BOT AGORA ACEITA:
+1. Mensagem exata (com ou sem codificação URL)
+2. Mensagens que contenham as palavras-chave: "comunidade de elite", "produtos premium", "condições especiais" 

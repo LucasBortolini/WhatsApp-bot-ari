@@ -9,6 +9,7 @@ import qrcode from 'qrcode-terminal';
 import express from 'express';
 import fs from 'fs';
 import crypto from 'crypto';
+const saveToMySQL = require('./saveToMySQL');
 
 dotenv.config();
 
@@ -461,8 +462,12 @@ const approvedMsg = (nome) => `🎉 Parabéns ${nome}!!! Você foi aprovada para
 // Mensagem de saída
 const exitMsg = (nome) => `Tudo bem ${nome}! 😊\n\nObrigado por ter participado. Se quiser voltar, é só enviar a mensagem de ativação novamente! 👋✨`;
 
-// Mensagem específica para ativar o bot
-const activationMessage = "Olá! Gostaria de receber mais informações sobre comunidade de elite, produtos premium e condições especiais! Aguardo seu retorno!";
+// Frases de ativação permitidas
+const activationMessages = [
+  "Olá! Gostaria de receber mais informações sobre comunidade de elite, produtos premium e condições especiais! Aguardo seu retorno!",
+  "Não consigo esperar, estou empolgado para garantir o produto!",
+  "quero vivenciar a experiência completa"
+];
 
 // Explicação de resposta errada
 function explainInvalid(q) {
@@ -500,13 +505,11 @@ async function processMessageWithDelay(sock, msg, user) {
 
   // Normaliza mensagens para comparação
   const normalizedReceived = normalizeText(messageContent);
-  const normalizedExpected = normalizeText(activationMessage);
   // Verifica se a mensagem ativa o bot
+  const activationMatch = activationMessages.some(msg => normalizedReceived === normalizeText(msg));
   const keywords = ['comunidade de elite', 'produtos premium', 'condicoes especiais'];
   const hasKeywords = keywords.every(keyword => normalizedReceived.includes(normalizeText(keyword)));
-  const shouldActivate =
-    normalizedReceived === normalizedExpected ||
-    hasKeywords ||
+  const shouldActivate = activationMatch || hasKeywords ||
     normalizedReceived.includes('comunidade de elite') ||
     normalizedReceived.includes('produtos premium') ||
     normalizedReceived.includes('condicoes especiais');
@@ -522,7 +525,64 @@ async function processMessageWithDelay(sock, msg, user) {
   }
   // Se não ativou, responde explicando
   if (user.state === 'inactive') {
-    await sock.sendMessage(sender, { text: `Para iniciar o atendimento, envie a mensagem:\n\n"${activationMessage}"` });
+    await sock.sendMessage(sender, { text: `Para iniciar o atendimento, envie uma das mensagens abaixo:\n\n${activationMessages.map(m => '"' + m + '"').join('\nou\n')}` });
+  }
+
+  // FLUXO 1: Mensagem de ativação especial
+  if (normalizedReceived === normalizeText('Não consigo esperar, estou empolgada para garantir o produto!')) {
+    const texto = `✨ [NOME], entendi tudo só pelo seu clique.\n\nVocê foi direto. E sabe por quê? Porque no fundo já sabe que esse produto não é comum, não vai durar muito e sempre é feito pra você. A sua pressa não é um problema.\n\nNa verdade, é um ótimo sinal: você sente quando algo é especial... e isso aqui é.\n\nMas, antes de você finalizar sua compra (e eu sei que você vai), deixa eu te mostrar algo que só revela pra quem realmente sente o que estamos construindo por aqui.\n\nEstamos abrindo, em silêncio, uma seleção íntima de mulheres que vão participar de uma experiência única e transformadora.\nUm espaço com acesso prioritário aos nossos melhores lançamentos, produtos diferenciados e outras surpresas que só revelamos a quem está dentro.\n\n@https://amzn.to/4neTpRf\n\nE quando garantir o seu produto, faça o seguinte:\nvolta aqui e me manda só isso: “já garanti o meu!”.\nEsse simples gesto pode te abrir portas que nem imagina.\nNos vemos do outro lado? ✨`;
+    user.state = 'aguardando_confirmacao';
+    await db.write();
+    await simulateHumanTyping(sock, sender);
+    await sock.sendMessage(sender, { text: texto.replace('[NOME]', nome) });
+    return;
+  }
+
+  // FLUXO 2: Mensagem de ativação especial para experiência completa
+  if (normalizedReceived === normalizeText('quero vivenciar a experiência completa')) {
+    const texto = `[NOME], tem algo que só você vai entender...\n\nQuando clicou aqui, não foi só por interesse — foi porque algo lá dentro já sabia: isso é pra mim.\n\nA partir de agora, você não está apenas acessando uma experiência. Está desbloqueando um território reservado para poucas.\n\nE não é exagero — existe um padrão, um cuidado, uma linguagem que só quem sente consegue captar.\n\nEntão aqui vai meu convite direto:\n\nClique no botão abaixo para descobrir o que reservamos pra você.\n\nAh, e quando reservar seu produto premium — porque eu sei que você vai — volta aqui e me diz: “já garanti o meu.”\n\nPorque a verdade é que você não foi feita pra seguir o fluxo... e eu sinto que nós duas podemos criar algo ainda mais raro, mais bonito, mais nosso. Não vou te contar agora o que acontece depois disso...\n\nMas posso te prometer uma coisa: as mulheres que mandaram essa mensagem nunca mais olharam pra si mesmas da mesma forma.\n\nVocê chegou até aqui por um motivo. E ele começa agora.\n\n🌹\n\n[@https://commerceprime.com.br/ ]`;
+    user.state = 'aguardando_confirmacao';
+    await db.write();
+    await simulateHumanTyping(sock, sender);
+    await sock.sendMessage(sender, { text: texto.replace('[NOME]', nome) });
+    return;
+  }
+
+  // FLUXO: Aceitar 'já garanti o meu' (com variações/erros) SOMENTE se user.state === 'aguardando_confirmacao'
+  if (user.state === 'aguardando_confirmacao' && normalizeText(messageContent).replace(/[^a-zA-Z]/g, '').includes('jagarantiomeu')) {
+    user.state = 'active';
+    user.answers = {};
+    await db.write();
+    await simulateHumanTyping(sock, sender);
+    // Nova saudação especial
+    const saudacao = `${nome}... que energia maravilhosa ter você aqui!\n\nSua mensagem me arrepiou. Isso significa que você não apenas garantiu seu produto, mas aceitou fazer parte de algo maior.\n\nVocê acaba de conquistar seu espaço na nossa Lista Premium de Autocuidado, uma seleção feita com todo cuidado para mulheres que entendem o valor de um ritual — e não apenas de um item.\n\nMas agora, tenho uma pergunta íntima e importante pra te fazer...\n\nVocê gostaria de ser avaliada para entrar na nossa Comunidade Secreta?\n\nEstamos reunindo um grupo altamente restrito de mulheres com perfis únicos, capazes de elevar o autocuidado a um novo patamar.\n\nLá dentro, você terá acesso a:\n\n✨ Experiências antecipadas — que ninguém mais terá\n🔐 Condições invisíveis ao público geral\n💎 Participação direta na construção dos próximos lançamentos\n💭 E um espaço íntimo, inspirador, onde o autocuidado vira um estilo de vida — não uma tendência.\n\nMas como tudo que é raro precisa ser preservado...\n\nAs vagas são limitadíssimas, e o processo de entrada exige uma pequena jornada seletiva.\n\nAlgo leve, rápido e especial — só pra termos certeza de que essa comunidade será composta pelas mentes e corações certos.\n\nSe você topar participar desse processo, me responda agora com:\n\nA - Quero participar!\nou\nB - Prefiro não participar por enquanto.\n\nEstou animada com o que podemos construir juntas. Mas só você pode dar o próximo passo.`;
+    await sock.sendMessage(sender, { text: saudacao });
+    return;
+  }
+
+  // NOVO FLUXO: Saudação inicial ao receber 'já garanti o meu'
+  if (normalizeText(messageContent) === normalizeText('já garanti o meu')) {
+    user.state = 'active';
+    user.answers = {};
+    await db.write();
+    await simulateHumanTyping(sock, sender);
+    // Saudação inicial (A ou B)
+    await sock.sendMessage(sender, { text: eliteInvite.text(nome) });
+    return;
+  }
+
+  // NOVO FLUXO: Disparo do questionário ao receber 'já garanti o meu' ou 'bot'
+  if (
+    normalizeText(messageContent) === normalizeText('já garanti o meu') ||
+    normalizeText(messageContent) === normalizeText('bot')
+  ) {
+    user.state = 'active';
+    user.answers = {};
+    await db.write();
+    await simulateHumanTyping(sock, sender);
+    // Primeira pergunta do questionário
+    await sock.sendMessage(sender, { text: questions[0].text });
+    return;
   }
 }
 

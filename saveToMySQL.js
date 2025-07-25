@@ -7,26 +7,35 @@ function capitalizeName(nome) {
 
 // Função para formatar telefone para (xx) xxxxx-xxxx
 function formatPhone(telefone) {
+  console.log('[DEBUG] Telefone original:', telefone);
+  
   // Remove @s.whatsapp.net se existir
   let cleanPhone = telefone.replace('@s.whatsapp.net', '');
+  console.log('[DEBUG] Telefone sem @s.whatsapp.net:', cleanPhone);
   
   // Extrai apenas números
   const nums = cleanPhone.replace(/\D/g, '');
+  console.log('[DEBUG] Apenas números:', nums);
   
   if (nums.length === 13 && nums.startsWith('55')) {
     // Formato: 554197839788 -> (41) 97839-7888
     const ddd = nums.slice(2, 4);
     const parte1 = nums.slice(4, 9);
     const parte2 = nums.slice(9, 13);
-    return `(${ddd}) ${parte1}-${parte2}`;
+    const formatted = `(${ddd}) ${parte1}-${parte2}`;
+    console.log('[DEBUG] Telefone formatado:', formatted);
+    return formatted;
   } else if (nums.length === 11) {
     // Formato: 41978397888 -> (41) 97839-7888
     const ddd = nums.slice(0, 2);
     const parte1 = nums.slice(2, 7);
     const parte2 = nums.slice(7, 11);
-    return `(${ddd}) ${parte1}-${parte2}`;
+    const formatted = `(${ddd}) ${parte1}-${parte2}`;
+    console.log('[DEBUG] Telefone formatado:', formatted);
+    return formatted;
   }
   
+  console.log('[DEBUG] Não conseguiu formatar, retornando original:', telefone);
   return telefone; // Retorna original se não conseguir formatar
 }
 
@@ -47,6 +56,8 @@ function getBrasiliaDateTime() {
 
 async function saveToMySQL(userData) {
   try {
+    console.log('[DEBUG] userData.id (telefone original):', userData.id);
+    
     const params = new URLSearchParams();
     params.append('nome', capitalizeName(userData.nome || ''));
     params.append('telefone', formatPhone(userData.id || ''));
@@ -59,6 +70,8 @@ async function saveToMySQL(userData) {
     params.append('q7', upperAll(userData.answers.q7 || ''));
     params.append('q8', upperAll(userData.answers.q8 || ''));
     params.append('datahora', getBrasiliaDateTime());
+
+    console.log('[DEBUG] Telefone que será enviado:', params.get('telefone'));
 
     await axios.post('https://commerceprime.com.br/resposta_bot.php', params, {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }

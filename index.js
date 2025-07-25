@@ -699,9 +699,9 @@ async function processMessageWithDelay(sock, msg, user) {
         console.log('[DEBUG] user.currentStep:', user.currentStep);
         
         // Envia texto personalizado ANTES da próxima pergunta (exceto para a primeira pergunta)
-        if (step > 0) { // step > 0 significa que não é a primeira pergunta
-          const personalizationText = humanizationTexts[step - 1]; // step - 1 porque o array começa em 0
-          console.log('[DEBUG] Enviando texto personalizado após pergunta', step);
+        if (user.currentStep > 1) { // user.currentStep > 1 significa que não é a primeira pergunta
+          const personalizationText = humanizationTexts[user.currentStep - 2]; // user.currentStep - 2 porque o array começa em 0
+          console.log('[DEBUG] Enviando texto personalizado antes da pergunta', user.currentStep);
           console.log('[DEBUG] Texto personalizado:', personalizationText);
           await simulateHumanTyping(sock, sender);
           await sock.sendMessage(sender, { text: personalizationText });

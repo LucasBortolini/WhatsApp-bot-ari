@@ -187,51 +187,51 @@ const messageProcessingDelay = 8000; // 8 segundos para processar mensagens (aum
 const questions = [
   {
     key: 'q1',
-    text: '1⃣ Como podemos definir sua relação com o autocuidado? 🤔\n\n(Queremos entender o seu momento e perfil para te oferecer algo à altura.)\n\nA - Sou minimalista — praticidade acima de tudo, mas sem abrir mão da qualidade. ✨\nB - Amo uma rotina completa — cada passo é um ritual. 🧖‍♀️\nC - Estou começando agora, mas quero aprender e investir no que há de melhor. 🌱\nS - Sair 🚪\n\nResponda com a letra (A, B, C ou S).',
+    text: '① **Como podemos definir sua relação com o autocuidado?** 🤔\n\n*(Queremos entender o seu momento e perfil para te oferecer algo à altura.)*\n\n**A** - Sou minimalista — praticidade acima de tudo, mas sem abrir mão da qualidade. ✨\n**B** - Amo uma rotina completa — cada passo é um ritual. 🧘‍♀️\n**C** - Estou começando agora, mas quero aprender e investir no que há de melhor. 🌱\n**S** - Sair 🚪\n\n**Responda com a letra (A, B, C ou S).** 📝',
     options: ['A', 'B', 'C', 'S'],
     multi: false
   },
   {
     key: 'q2',
-    text: '2⃣ Quando o assunto é pele, qual objetivo fala mais alto no seu coração? 💖\n\nA - Prevenção de linhas finas e sinais do tempo. ⏰\nB - Clareamento, uniformidade e viço. ✨\nC - Controle de oleosidade e poros visíveis. 🎯\nD - Hidratação intensa e pele iluminada. 💧\nE - Sensação de frescor e leveza o dia todo. 🌿\nS - Sair 🚪\n\nResponda com a letra (A, B, C, D, E ou S).',
+    text: '② **Quando o assunto é pele, qual objetivo fala mais alto no seu coração?** 💖\n\n**A** - Prevenção de linhas finas e sinais do tempo. ⏰\n**B** - Clareamento, uniformidade e viço. ✨\n**C** - Controle de oleosidade e poros visíveis. 🎯\n**D** - Hidratação intensa e pele iluminada. 💧\n**E** - Sensação de frescor e leveza o dia todo. 🌿\n**S** - Sair 🚪\n\n**Responda com a letra (A, B, C, D, E ou S).** 📝',
     options: ['A', 'B', 'C', 'D', 'E', 'S'],
     multi: false
   },
   {
     key: 'q3',
-    text: '3⃣ Um produto perfeito para você precisa ter qual textura? 🧴\n\nA - Fluída e sofisticada, absorção instantânea. 💎\nB - Rica e encorpada, com toque sedoso. 🥰\nC - Leve e refrescante, quase um toque de água. 💦\nD - Oil-free, com efeito mate, mas hidratante. 🌟\nS - Sair 🚪\n\nResponda com a letra (A, B, C, D ou S).',
+    text: '③ **Um produto perfeito para você precisa ter qual textura?** 🧴\n\n**A** - Fluída e sofisticada, absorção instantânea. 💎\n**B** - Rica e encorpada, com toque sedoso. 🥰\n**C** - Leve e refrescante, quase um toque de água. 💦\n**D** - Oil-free, com efeito mate, mas hidratante. 🌟\n**S** - Sair 🚪\n\n**Responda com a letra (A, B, C, D ou S).** 📝',
     options: ['A', 'B', 'C', 'D', 'S'],
     multi: false
   },
   {
     key: 'q4',
-    text: '4⃣ Aromas também contam uma história. Qual delas combina com você? 🌸\n\nA - Discreta, quase imperceptível — o protagonismo é da pele. 🤫\nB - Floral elegante e delicado. 🌺\nC - Herbal ou cítrico, sensação de naturalidade e frescor. 🍋\nD - Doce e marcante, porém refinado. 🍯\nE - Sem fragrância — puro cuidado, sem interferências. 🌬️\nS - Sair 🚪\n\nResponda com a letra (A, B, C, D, E ou S).',
+    text: '④ **Aromas também contam uma história. Qual delas combina com você?** 🌸\n\n**A** - Discreta, quase imperceptível — o protagonismo é da pele. 🤫\n**B** - Floral elegante e delicado. 🌺\n**C** - Herbal ou cítrico, sensação de naturalidade e frescor. 🍋\n**D** - Doce e marcante, porém refinado. 🍯\n**E** - Sem fragrância — puro cuidado, sem interferências. 🌬️\n**S** - Sair 🚪\n\n**Responda com a letra (A, B, C, D, E ou S).** 📝',
     options: ['A', 'B', 'C', 'D', 'E', 'S'],
     multi: false
   },
   {
     key: 'q5',
-    text: '5⃣ Quando você investe em produtos de autocuidado, qual sentimento busca? 💭\n\nA - Sentir que estou investindo no meu poder e na minha confiança. 💪\nB - Ter um momento só meu, de paz e bem-estar. 🧘‍♀️\nC - Participar de algo exclusivo, de alta performance. 🏆\nD - Me sentir mais jovem, luminosa e radiante. ✨\nS - Sair 🚪\n\nResponda com a letra (A, B, C, D ou S).',
+    text: '⑤ **Quando você investe em produtos de autocuidado, qual sentimento busca?** 💭\n\n**A** - Sentir que estou investindo no meu poder e na minha confiança. 💪\n**B** - Ter um momento só meu, de paz e bem-estar. 🧘‍♀️\n**C** - Participar de algo exclusivo, de alta performance. 🏆\n**D** - Me sentir mais jovem, luminosa e radiante. ✨\n**S** - Sair 🚪\n\n**Responda com a letra (A, B, C, D ou S).** 📝',
     options: ['A', 'B', 'C', 'D', 'S'],
     multi: false
   },
   {
     key: 'q6',
-    text: '6⃣ Quais desses 3 produtos de autocuidado premium não podem faltar na sua rotina? 🛍️\n\n(Escolha até 3 que você considera indispensáveis para uma pele impecável.)\n\nA - Sérum Anti-idade / Antissinais 🧬\nB - Vitamina C Potente 🍊\nC - Hidratante Profundo 💧\nD - Gel de Limpeza Facial 🧼\nE - Máscara Facial Detox ou Hidratante 🎭\nF - Esfoliante Facial Suave 🌊\nG - Protetor Solar com Alta Tecnologia ☀️\nS - Sair 🚪\n\nResponda com até 3 letras separadas por vírgula (ex: A,B,C) ou S para sair.',
+    text: '⑥ **Quais desses 3 produtos de autocuidado premium não podem faltar na sua rotina?** 🛍️\n\n*(Escolha até 3 que você considera indispensáveis para uma pele impecável.)*\n\n**A** - Sérum Anti-idade / Antissinais 🧬\n**B** - Vitamina C Potente 🍊\n**C** - Hidratante Profundo 💧\n**D** - Gel de Limpeza Facial 🧼\n**E** - Máscara Facial Detox ou Hidratante 🎭\n**F** - Esfoliante Facial Suave 🌊\n**G** - Protetor Solar com Alta Tecnologia ☀️\n**S** - Sair 🚪\n\n**Responda com até 3 letras separadas por vírgula (ex: A,B,C) ou S para sair.** 📝',
     options: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'S'],
     multi: true,
     max: 3
   },
   {
     key: 'q7',
-    text: '7⃣ O que mais te incomoda ou você gostaria de melhorar na sua pele hoje? 🤔\n\n(Escolha até 2 principais.)\n\nA - Manchas ou tom de pele desigual 🎨\nB - Oleosidade ou acne 🔥\nC - Linhas finas e primeiros sinais de idade ⏳\nD - Falta de firmeza ou elasticidade 🎈\nE - Poros dilatados e textura irregular 🔍\nF - Pele opaca e sem brilho natural 💡\nG - Sensibilidade e vermelhidão 🌹\nH - Ressecamento ou falta de hidratação 🏜️\nS - Sair 🚪\n\nResponda com até 2 letras separadas por vírgula (ex: A,B) ou S para sair.',
+    text: '⑦ **O que mais te incomoda ou você gostaria de melhorar na sua pele hoje?** 🤔\n\n*(Escolha até 2 principais.)*\n\n**A** - Manchas ou tom de pele desigual 🎨\n**B** - Oleosidade ou acne 🔥\n**C** - Linhas finas e primeiros sinais de idade ⏳\n**D** - Falta de firmeza ou elasticidade 🎈\n**E** - Poros dilatados e textura irregular 🔍\n**F** - Pele opaca e sem brilho natural 💡\n**G** - Sensibilidade e vermelhidão 🌹\n**H** - Ressecamento ou falta de hidratação 🏜️\n**S** - Sair 🚪\n\n**Responda com até 2 letras separadas por vírgula (ex: A,B) ou S para sair.** 📝',
     options: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'S'],
     multi: true,
     max: 2
   },
   {
     key: 'q8',
-    text: '8⃣ Qual textura você mais ama na hora de aplicar um produto na pele? 🎯\n\nA - Sérum fluido e leve 💧\nB - Creme aveludado 🥰\nC - Gel refrescante 🌊\nD - Óleo leve e nutritivo 💎\nE - Bálsamo cremoso 🧈\nS - Sair 🚪\n\nResponda com a letra (A, B, C, D, E ou S).',
+    text: '⑧ **Qual textura você mais ama na hora de aplicar um produto na pele?** 🎯\n\n**A** - Sérum fluido e leve 💧\n**B** - Creme aveludado 🥰\n**C** - Gel refrescante 🌊\n**D** - Óleo leve e nutritivo 💎\n**E** - Bálsamo cremoso 🧈\n**S** - Sair 🚪\n\n**Responda com a letra (A, B, C, D, E ou S).** 📝',
     options: ['A', 'B', 'C', 'D', 'E', 'S'],
     multi: false
   }
@@ -384,17 +384,17 @@ function checkMessageLimit(userId) {
 function invalidMsg(q) {
   // Mensagens personalizadas para cada questão
   const personalizedMessages = {
-    'q1': '❌ Desculpe, não entendi. Responda com a letra (A, B, C ou S).',
-    'q2': '❌ Ops! Resposta inválida. Use apenas uma letra: A, B, C, D, E ou S.',
-    'q3': '❌ Não entendi sua resposta. Escolha uma letra: A, B, C, D ou S.',
-    'q4': '❌ Resposta incorreta. Responda com uma letra: A, B, C, D, E ou S.',
-    'q5': '❌ Desculpe, não consegui entender. Use apenas uma letra: A, B, C, D ou S.',
-    'q6': '❌ Ops! Resposta inválida. Escolha até 3 letras separadas por vírgula (ex: A,B,C) ou S para sair.',
-    'q7': '❌ Não entendi. Responda com até 2 letras separadas por vírgula (ex: A,B) ou S para sair.',
-    'q8': '❌ Resposta incorreta. Escolha uma letra: A, B, C, D, E ou S.'
+    'q1': '❌ **Desculpe, não entendi.** Responda com a letra (A, B, C ou S). 📝',
+    'q2': '❌ **Ops! Resposta inválida.** Use apenas uma letra: A, B, C, D, E ou S. 📝',
+    'q3': '❌ **Não entendi sua resposta.** Escolha uma letra: A, B, C, D ou S. 📝',
+    'q4': '❌ **Resposta incorreta.** Responda com uma letra: A, B, C, D, E ou S. 📝',
+    'q5': '❌ **Desculpe, não consegui entender.** Use apenas uma letra: A, B, C, D ou S. 📝',
+    'q6': '❌ **Ops! Resposta inválida.** Escolha até 3 letras separadas por vírgula (ex: A,B,C) ou S para sair. 📝',
+    'q7': '❌ **Não entendi.** Responda com até 2 letras separadas por vírgula (ex: A,B) ou S para sair. 📝',
+    'q8': '❌ **Resposta incorreta.** Escolha uma letra: A, B, C, D, E ou S. 📝'
   };
   
-  return personalizedMessages[q.key] || `❌ Resposta inválida. Tente com: ${q.options.join(', ')}${q.multi ? `\nVocê pode escolher até ${q.max} opção(ões).` : ''}`;
+  return personalizedMessages[q.key] || `❌ **Resposta inválida.** Tente com: ${q.options.join(', ')}${q.multi ? `\nVocê pode escolher até ${q.max} opção(ões).` : ''} 📝`;
 }
 
 function validateAnswer(q, answer) {
@@ -468,40 +468,40 @@ function getUserName(msg, sock) {
 
 
 // Mensagem de agradecimento e encerramento
-const byeMsg = (nome) => `Muito obrigado pela sua atenção, ${nome}! 💖\n\nQuando quiser, estaremos por aqui. Tenha um ótimo dia! ✨👋`;
+const byeMsg = (nome) => `💖 **Muito obrigado pela sua atenção, ${nome}!**\n\nQuando quiser, estaremos por aqui. Tenha um ótimo dia! ✨👋`;
 
 // Mensagem de análise e aprovação
-const analyzingMsg = '⏳ Por favor aguarde, estamos analisando seu perfil... 🔍✨';
-const approvedMsg = (nome) => `🎉 Parabéns ${nome}!!! Você foi aprovada para a nossa comunidade VIP, entre agora pelo link abaixo e fique por dentro de tudo sobre autocuidado, tudo em primeira mão! 💎\n\n👉 www.whatsapp.com.br/grupo 🔗`;
+const analyzingMsg = '⏳ **Por favor aguarde, estamos analisando seu perfil...** 🔍✨';
+const approvedMsg = (nome) => `🎉 **Parabéns ${nome}!!!** Você foi aprovada para a nossa comunidade VIP, entre agora pelo link abaixo e fique por dentro de tudo sobre autocuidado, tudo em primeira mão! 💎\n\n👉 **www.whatsapp.com.br/grupo** 🔗`;
 
 // Mensagem de saída
-const exitMsg = (nome) => `Tudo bem ${nome}! 😊\n\nObrigado por ter participado. Se quiser voltar, é só enviar a mensagem de ativação novamente! 👋✨`;
+const exitMsg = (nome) => `😊 **Tudo bem ${nome}!**\n\nObrigado por ter participado. Se quiser voltar, é só enviar a mensagem de ativação novamente! 👋✨`;
 
 // Textos personalizados de humanização entre perguntas
 const humanizationTexts = [
   // Após Q1
-  "Excelente escolha! Você já começou a nos mostrar o seu DNA de autocuidado.\n\nAgora, vamos explorar um pouco mais o que verdadeiramente conecta você com sua pele? Confie, isso vai te surpreender.",
+  "✨ **Excelente escolha!** Você já começou a nos mostrar o seu DNA de autocuidado.\n\nAgora, vamos explorar um pouco mais o que verdadeiramente conecta você com sua pele? Confie, isso vai te surpreender! 🌟",
   
   // Após Q2
-  "Impecável. Esse é o tipo de resposta que revela quem sabe o que quer. Estamos alinhando cada detalhe, porque quem caminha conosco merece produtos feitos sob medida para suas ambições. Vamos seguir?",
+  "💎 **Impecável!** Esse é o tipo de resposta que revela quem sabe o que quer. Estamos alinhando cada detalhe, porque quem caminha conosco merece produtos feitos sob medida para suas ambições.\n\nVamos seguir? 🚀",
   
   // Após Q3
-  "Textura é um segredo não dito do prazer no autocuidado... e você acabou de nos dar uma pista valiosa. Agora quero te perguntar algo que conecta diretamente com sua essência. Pronta?",
+  "🧴 **Textura é um segredo não dito** do prazer no autocuidado... e você acabou de nos dar uma pista valiosa!\n\nAgora quero te perguntar algo que conecta diretamente com sua essência. Pronta? ✨",
   
   // Após Q4
-  "Que escolha refinada! O aroma certo desperta emoções, cria memórias. E no seu caso... temos algo especial surgindo aqui. Permite que eu te conheça ainda mais? Estamos chegando lá.",
+  "🌸 **Que escolha refinada!** O aroma certo desperta emoções, cria memórias. E no seu caso... temos algo especial surgindo aqui.\n\nPermite que eu te conheça ainda mais? Estamos chegando lá! 💫",
   
   // Após Q5
-  "Incrível! Isso nos mostra que seu autocuidado não é só uma rotina — é um manifesto pessoal. A próxima pergunta vai lapidar ainda mais o seu perfil exclusivo. Posso prosseguir?",
+  "🌟 **Incrível!** Isso nos mostra que seu autocuidado não é só uma rotina — é um manifesto pessoal.\n\nA próxima pergunta vai lapidar ainda mais o seu perfil exclusivo. Posso prosseguir? ✨",
   
   // Após Q6
-  "Informações valiosas, obrigado por compartilhar! Agora sim estamos desenhando um mapa personalizado da sua pele e dos seus desejos. Só mais um pouco, o melhor está chegando...",
+  "💎 **Informações valiosas**, obrigado por compartilhar! Agora sim estamos desenhando um mapa personalizado da sua pele e dos seus desejos.\n\nSó mais um pouco, o melhor está chegando... 🌟",
   
   // Após Q7
-  "Agora você tocou no ponto-chave. Entender o que te incomoda hoje é o primeiro passo para criarmos soluções que realmente façam sentido. Estou quase encerrando — mas essa próxima resposta é ouro puro.",
+  "🎯 **Agora você tocou no ponto-chave!** Entender o que te incomoda hoje é o primeiro passo para criarmos soluções que realmente façam sentido.\n\nEstou quase encerrando — mas essa próxima resposta é **ouro puro**! ✨",
   
   // Após Q8 (substitui o texto de "aguarde, estamos analisando...")
-  "Prontíssimo, tudo registrado! Com essas respostas, conseguimos um raio-x precioso sobre você. Me dê só um instante... estou analisando cuidadosamente seu perfil para uma resposta à sua altura."
+  "🎉 **Prontíssimo, tudo registrado!** Com essas respostas, conseguimos um raio-x precioso sobre você.\n\nMe dê só um instante... estou analisando cuidadosamente seu perfil para uma resposta à sua altura! 🔍✨"
 ];
 
 // Frases de ativação permitidas
@@ -511,7 +511,7 @@ const activationMessages = [
 
 // Explicação de resposta errada
 function explainInvalid(q) {
-  let base = '❌ Resposta inválida.';
+  let base = '❌ **Resposta inválida.**';
   if (q.multi) {
     base += `\n\nResponda com até ${q.max} letra(s) separadas por vírgula. Exemplo: ${q.options.slice(0, q.max).join(',')} 📝`;
   } else {
@@ -563,7 +563,7 @@ async function processMessageWithDelay(sock, msg, user) {
   if (normalizedReceived === normalizeText('Não consigo esperar, estou empolgada para garantir o produto!') || 
       normalizedReceived === normalizeText('Não consigo esperar, estou empolgado para garantir o produto!')) {
     console.log('[DEBUG] Usuário enviou mensagem do Fluxo 1, mudando para aguardando_confirmacao');
-    const texto = `✨ [NOME], entendi tudo só pelo seu clique.\n\nVocê foi direto. E sabe por quê? Porque no fundo já sabe que esse produto não é comum, não vai durar muito e sempre é feito pra você. A sua pressa não é um problema.\n\nNa verdade, é um ótimo sinal: você sente quando algo é especial... e isso aqui é.\n\nMas, antes de você finalizar sua compra (e eu sei que você vai), deixa eu te mostrar algo que só revela pra quem realmente sente o que estamos construindo por aqui.\n\nEstamos abrindo, em silêncio, uma seleção íntima de mulheres que vão participar de uma experiência única e transformadora.\nUm espaço com acesso prioritário aos nossos melhores lançamentos, produtos diferenciados e outras surpresas que só revelamos a quem está dentro.\n\n@https://amzn.to/4neTpRf\n\nE quando garantir o seu produto, faça o seguinte:\nvolta aqui e me manda só isso: "já garanti o meu!".\nEsse simples gesto pode te abrir portas que nem imagina.\nNos vemos do outro lado? ✨`;
+    const texto = `✨ **[NOME], entendi tudo só pelo seu clique!**\n\nVocê foi direto. E sabe por quê? Porque no fundo já sabe que esse produto não é comum, não vai durar muito e sempre é feito pra você. A sua pressa não é um problema.\n\nNa verdade, é um ótimo sinal: você sente quando algo é especial... e isso aqui é! 💎\n\nMas, antes de você finalizar sua compra (e eu sei que você vai), deixa eu te mostrar algo que só revela pra quem realmente sente o que estamos construindo por aqui.\n\nEstamos abrindo, em silêncio, uma seleção íntima de mulheres que vão participar de uma experiência única e transformadora.\n\nUm espaço com acesso prioritário aos nossos melhores lançamentos, produtos diferenciados e outras surpresas que só revelamos a quem está dentro.\n\n👉 **@https://amzn.to/4neTpRf**\n\nE quando garantir o seu produto, faça o seguinte:\n\n**💬 Volta aqui e me manda só isso: "já garanti o meu!"**\n\nEsse simples gesto pode te abrir portas que nem imagina.\n\nNos vemos do outro lado? ✨🌟`;
     user.state = 'aguardando_confirmacao';
     await db.write();
     await simulateHumanTyping(sock, sender);
@@ -576,7 +576,7 @@ async function processMessageWithDelay(sock, msg, user) {
   console.log('[DEBUG] São iguais Fluxo 2?', normalizedReceived === normalizeText('quero vivenciar a experiência completa'));
   if (normalizedReceived === normalizeText('quero vivenciar a experiência completa')) {
     console.log('[DEBUG] Usuário enviou "quero vivenciar a experiência completa", mudando para aguardando_confirmacao');
-    const texto = `[NOME], tem algo que só você vai entender...\n\nQuando clicou aqui, não foi só por interesse — foi porque algo lá dentro já sabia: isso é pra mim.\n\nA partir de agora, você não está apenas acessando uma experiência. Está desbloqueando um território reservado para poucas.\n\nE não é exagero — existe um padrão, um cuidado, uma linguagem que só quem sente consegue captar.\n\nEntão aqui vai meu convite direto:\n\nClique no botão abaixo para descobrir o que reservamos pra você.\n\nAh, e quando reservar seu produto premium — porque eu sei que você vai — volta aqui e me diz: "já garanti o meu."\n\nPorque a verdade é que você não foi feita pra seguir o fluxo... e eu sinto que nós duas podemos criar algo ainda mais raro, mais bonito, mais nosso. Não vou te contar agora o que acontece depois disso...\n\nMas posso te prometer uma coisa: as mulheres que mandaram essa mensagem nunca mais olharam pra si mesmas da mesma forma.\n\nVocê chegou até aqui por um motivo. E ele começa agora.\n\n🌹\n\n[@https://commerceprime.com.br/ ]`;
+    const texto = `💎 **[NOME], tem algo que só você vai entender...**\n\nQuando clicou aqui, não foi só por interesse — foi porque algo lá dentro já sabia: isso é pra mim.\n\nA partir de agora, você não está apenas acessando uma experiência. Está desbloqueando um território reservado para poucas.\n\nE não é exagero — existe um padrão, um cuidado, uma linguagem que só quem sente consegue captar.\n\nEntão aqui vai meu convite direto:\n\n👉 **Clique no botão abaixo para descobrir o que reservamos pra você.**\n\nAh, e quando reservar seu produto premium — porque eu sei que você vai — volta aqui e me diz:\n\n**💬 "já garanti o meu"**\n\nPorque a verdade é que você não foi feita pra seguir o fluxo... e eu sinto que nós duas podemos criar algo ainda mais raro, mais bonito, mais nosso.\n\nNão vou te contar agora o que acontece depois disso...\n\nMas posso te prometer uma coisa: as mulheres que mandaram essa mensagem nunca mais olharam pra si mesmas da mesma forma.\n\nVocê chegou até aqui por um motivo. E ele começa agora.\n\n🌹✨\n\n👉 **[@https://commerceprime.com.br/]**`;
     user.state = 'aguardando_confirmacao';
     await db.write();
     await simulateHumanTyping(sock, sender);
@@ -594,7 +594,7 @@ async function processMessageWithDelay(sock, msg, user) {
     await db.write();
     await simulateHumanTyping(sock, sender);
     // Nova saudação especial
-    const saudacao = `${nome}... que energia maravilhosa ter você aqui!\n\nSua mensagem me arrepiou. Isso significa que você não apenas garantiu seu produto, mas aceitou fazer parte de algo maior.\n\nVocê acaba de conquistar seu espaço na nossa Lista Premium de Autocuidado, uma seleção feita com todo cuidado para mulheres que entendem o valor de um ritual — e não apenas de um item.\n\nMas agora, tenho uma pergunta íntima e importante pra te fazer...\n\nVocê gostaria de ser avaliada para entrar na nossa Comunidade Secreta?\n\nEstamos reunindo um grupo altamente restrito de mulheres com perfis únicos, capazes de elevar o autocuidado a um novo patamar.\n\nLá dentro, você terá acesso a:\n\n✨ Experiências antecipadas — que ninguém mais terá\n🔐 Condições invisíveis ao público geral\n💎 Participação direta na construção dos próximos lançamentos\n💭 E um espaço íntimo, inspirador, onde o autocuidado vira um estilo de vida — não uma tendência.\n\nMas como tudo que é raro precisa ser preservado...\n\nAs vagas são limitadíssimas, e o processo de entrada exige uma pequena jornada seletiva.\n\nAlgo leve, rápido e especial — só pra termos certeza de que essa comunidade será composta pelas mentes e corações certos.\n\nSe você topar participar desse processo, me responda agora com:\n\nA - Quero participar!\nou\nB - Prefiro não participar por enquanto.\n\nEstou animada com o que podemos construir juntas. Mas só você pode dar o próximo passo.`;
+    const saudacao = `💫 **${nome}... que energia maravilhosa ter você aqui!**\n\nSua mensagem me arrepiou. Isso significa que você não apenas garantiu seu produto, mas aceitou fazer parte de algo maior.\n\nVocê acaba de conquistar seu espaço na nossa **Lista Premium de Autocuidado**, uma seleção feita com todo cuidado para mulheres que entendem o valor de um ritual — e não apenas de um item.\n\nMas agora, tenho uma pergunta íntima e importante pra te fazer...\n\n**Você gostaria de ser avaliada para entrar na nossa Comunidade Secreta?**\n\nEstamos reunindo um grupo altamente restrito de mulheres com perfis únicos, capazes de elevar o autocuidado a um novo patamar.\n\nLá dentro, você terá acesso a:\n\n✨ **Experiências antecipadas** — que ninguém mais terá\n🔐 **Condições invisíveis** ao público geral\n💎 **Participação direta** na construção dos próximos lançamentos\n💭 **E um espaço íntimo, inspirador**, onde o autocuidado vira um estilo de vida — não uma tendência.\n\nMas como tudo que é raro precisa ser preservado...\n\nAs vagas são limitadíssimas, e o processo de entrada exige uma pequena jornada seletiva.\n\nAlgo leve, rápido e especial — só pra termos certeza de que essa comunidade será composta pelas mentes e corações certos.\n\nSe você topar participar desse processo, me responda agora com:\n\n**A - Quero participar! 🚀**\nou\n**B - Prefiro não participar por enquanto. 😊**\n\nEstou animada com o que podemos construir juntas. Mas só você pode dar o próximo passo! ✨`;
     await sock.sendMessage(sender, { text: saudacao });
     return;
   }
@@ -623,7 +623,7 @@ async function processMessageWithDelay(sock, msg, user) {
       user.state = 'inactive';
       await db.write();
       await simulateHumanTyping(sock, sender);
-      await sock.sendMessage(sender, { text: 'Tudo bem! 😊 Quando quiser, estaremos por aqui. Tenha um ótimo dia! ✨👋' });
+              await sock.sendMessage(sender, { text: '😊 **Tudo bem!** Quando quiser, estaremos por aqui. Tenha um ótimo dia! ✨👋' });
       return;
     } else {
       console.log('[DEBUG] Resposta não reconhecida no estado comunidade_secreta');
@@ -656,7 +656,7 @@ async function processMessageWithDelay(sock, msg, user) {
       // VERIFICA se já respondeu esta pergunta
       if (user.answers[q.key]) {
         console.log(`[DEBUG] Usuário já respondeu a pergunta ${q.key}, ignorando mensagem extra`);
-        await sock.sendMessage(sender, { text: `Você já respondeu esta pergunta. Por favor, aguarde a próxima pergunta aparecer. 📝` });
+        await sock.sendMessage(sender, { text: `📝 **Você já respondeu esta pergunta.** Por favor, aguarde a próxima pergunta aparecer. ⏳` });
         return;
       }
       
@@ -682,7 +682,7 @@ async function processMessageWithDelay(sock, msg, user) {
         user.currentStep = undefined;
         user.answers = {};
         await db.write();
-        await sock.sendMessage(sender, { text: `Tudo bem, ${nome}! Você escolheu não continuar. Quando quiser retomar, é só enviar uma mensagem. 👋✨` });
+        await sock.sendMessage(sender, { text: `👋 **Tudo bem, ${nome}!** Você escolheu não continuar. Quando quiser retomar, é só enviar uma mensagem. ✨` });
         return;
       }
       
@@ -738,10 +738,10 @@ async function processMessageWithDelay(sock, msg, user) {
         await simulateHumanTyping(sock, sender);
         await sock.sendMessage(sender, { text: humanizationTexts[7] }); // Usa o texto personalizado da Q8
         console.log('[DEBUG] Dados enviados para o banco:', user);
-        setTimeout(async () => {
-          await simulateHumanTyping(sock, sender);
-          await sock.sendMessage(sender, { text: `🎉 Parabéns ${nome}!!! Você foi aprovada para a nossa comunidade VIP, entre agora pelo link abaixo e fique por dentro de tudo sobre autocuidado, tudo em primeira mão! 💎\n\n👉 www.whatsapp.com.br/grupo 🔗` });
-        }, 10000);
+                          setTimeout(async () => {
+                    await simulateHumanTyping(sock, sender);
+                    await sock.sendMessage(sender, { text: `🎉 **Parabéns ${nome}!!!** Você foi aprovada para a nossa comunidade VIP, entre agora pelo link abaixo e fique por dentro de tudo sobre autocuidado, tudo em primeira mão! 💎\n\n👉 **www.whatsapp.com.br/grupo** 🔗` });
+                  }, 10000);
         saveToCSV(user);
         saveToMySQL(user);
         user.state = 'inactive';

@@ -382,12 +382,19 @@ function checkMessageLimit(userId) {
 
 // Funções auxiliares
 function invalidMsg(q) {
-  const errorMessages = [
-    `❌ Ops! Resposta inválida. Tente com: ${q.options.join(', ')}${q.multi ? `\nVocê pode escolher até ${q.max} opção(ões).` : ''}`,
-    `⚠️ Resposta incorreta. Use: ${q.options.join(', ')}${q.multi ? `\nEscolha até ${q.max} opção(ões).` : ''}`,
-    `🤔 Não entendi. Responda com: ${q.options.join(', ')}${q.multi ? `\nMáximo ${q.max} opção(ões).` : ''}`
-  ];
-  return errorMessages[Math.floor(Math.random() * errorMessages.length)];
+  // Mensagens personalizadas para cada questão
+  const personalizedMessages = {
+    'q1': '❌ Desculpe, não entendi. Responda com a letra (A, B, C ou S).',
+    'q2': '❌ Ops! Resposta inválida. Use apenas uma letra: A, B, C, D, E ou S.',
+    'q3': '❌ Não entendi sua resposta. Escolha uma letra: A, B, C, D ou S.',
+    'q4': '❌ Resposta incorreta. Responda com uma letra: A, B, C, D, E ou S.',
+    'q5': '❌ Desculpe, não consegui entender. Use apenas uma letra: A, B, C, D ou S.',
+    'q6': '❌ Ops! Resposta inválida. Escolha até 3 letras separadas por vírgula (ex: A,B,C) ou S para sair.',
+    'q7': '❌ Não entendi. Responda com até 2 letras separadas por vírgula (ex: A,B) ou S para sair.',
+    'q8': '❌ Resposta incorreta. Escolha uma letra: A, B, C, D, E ou S.'
+  };
+  
+  return personalizedMessages[q.key] || `❌ Resposta inválida. Tente com: ${q.options.join(', ')}${q.multi ? `\nVocê pode escolher até ${q.max} opção(ões).` : ''}`;
 }
 
 function validateAnswer(q, answer) {
@@ -595,9 +602,15 @@ async function processMessageWithDelay(sock, msg, user) {
       await sock.sendMessage(sender, { text: questions[0].text });
       return;
     }
-    // Salva a resposta recebida na pergunta atual
+    // Salva a resposta recebida na pergunta atual, apenas se for válida
     if (step < questions.length) {
-      user.answers[questions[step].key] = messageContent.trim();
+      const q = questions[step];
+      if (!validateAnswer(q, messageContent)) {
+        console.log(`[ERRO] Resposta inválida para a questão ${q.key}: '${messageContent}'`);
+        await sock.sendMessage(sender, { text: invalidMsg(q) });
+        return;
+      }
+      user.answers[q.key] = messageContent.trim();
       await db.write();
       // Envia a próxima pergunta
       if (step + 1 < questions.length) {

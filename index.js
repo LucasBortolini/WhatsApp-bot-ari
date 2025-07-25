@@ -401,18 +401,17 @@ function validateAnswer(q, answer) {
   const cleanAnswer = answer.trim();
   
   if (q.multi) {
-    // Para respostas múltiplas, verifica se o formato está correto
-    // Deve ser exatamente: letra,letra,letra (sem espaços extras, sem vírgula no final)
-    const regex = new RegExp(`^[${q.options.join('')}](,[${q.options.join('')}]){0,${q.max-1}}$`);
-    if (!regex.test(cleanAnswer.replace(/\s/g, ''))) {
-      return false;
-    }
-    
+    // Para respostas múltiplas, aceita qualquer formato (A,b,C ou a,b,c ou A, B, C)
+    // Remove espaços e converte para maiúsculo para verificar
     const arr = cleanAnswer.split(',').map(a => a.trim().toUpperCase()).filter(Boolean);
+    
+    // Verifica se tem pelo menos 1 e no máximo q.max respostas
     if (arr.length === 0 || arr.length > q.max) return false;
+    
+    // Verifica se todas as letras são válidas
     return arr.every(a => q.options.includes(a));
   } else {
-    // Para resposta única, deve ser exatamente uma letra válida
+    // Para resposta única, aceita qualquer formato (A ou a)
     const singleLetter = cleanAnswer.toUpperCase();
     return q.options.includes(singleLetter) && singleLetter.length === 1;
   }
@@ -420,8 +419,10 @@ function validateAnswer(q, answer) {
 
 function normalizeAnswer(q, answer) {
   if (q.multi) {
-    return answer.split(',').map(a => a.trim().toUpperCase()).filter(Boolean);
+    // Para respostas múltiplas, padroniza para A,B,C
+    return answer.split(',').map(a => a.trim().toUpperCase()).filter(Boolean).join(',');
   } else {
+    // Para resposta única, padroniza para A
     return answer.trim().toUpperCase();
   }
 }
@@ -652,7 +653,7 @@ async function processMessageWithDelay(sock, msg, user) {
         await sock.sendMessage(sender, { text: invalidMsg(q) });
         return;
       }
-      user.answers[q.key] = messageContent.trim();
+      user.answers[q.key] = normalizeAnswer(q, messageContent);
       user.currentStep = step + 1;
       console.log('[DEBUG] Resposta salva:', user.answers[q.key]);
       console.log('[DEBUG] user.currentStep DEPOIS de incrementar:', user.currentStep);

@@ -398,12 +398,23 @@ function invalidMsg(q) {
 }
 
 function validateAnswer(q, answer) {
+  const cleanAnswer = answer.trim();
+  
   if (q.multi) {
-    const arr = answer.split(',').map(a => a.trim().toUpperCase()).filter(Boolean);
+    // Para respostas múltiplas, verifica se o formato está correto
+    // Deve ser exatamente: letra,letra,letra (sem espaços extras, sem vírgula no final)
+    const regex = new RegExp(`^[${q.options.join('')}](,[${q.options.join('')}]){0,${q.max-1}}$`);
+    if (!regex.test(cleanAnswer.replace(/\s/g, ''))) {
+      return false;
+    }
+    
+    const arr = cleanAnswer.split(',').map(a => a.trim().toUpperCase()).filter(Boolean);
     if (arr.length === 0 || arr.length > q.max) return false;
     return arr.every(a => q.options.includes(a));
   } else {
-    return q.options.includes(answer.trim().toUpperCase());
+    // Para resposta única, deve ser exatamente uma letra válida
+    const singleLetter = cleanAnswer.toUpperCase();
+    return q.options.includes(singleLetter) && singleLetter.length === 1;
   }
 }
 
@@ -605,6 +616,15 @@ async function processMessageWithDelay(sock, msg, user) {
     // Salva a resposta recebida na pergunta atual, apenas se for válida
     if (step < questions.length) {
       const q = questions[step];
+      const userResp = messageContent.trim().toUpperCase();
+      // Se o usuário digitar S, encerra o fluxo com mensagem personalizada
+      if (userResp === 'S') {
+        user.state = 'inactive';
+        await db.write();
+        await sock.sendMessage(sender, { text: `Tudo bem, ${nome}! Você saiu do atendimento, mas pode voltar quando quiser. ✨👋` });
+        return;
+      }
+      // Remover o encerramento por B aqui, pois só deve encerrar na saudação
       if (!validateAnswer(q, messageContent)) {
         console.log(`[ERRO] Resposta inválida para a questão ${q.key}: '${messageContent}'`);
         await sock.sendMessage(sender, { text: invalidMsg(q) });

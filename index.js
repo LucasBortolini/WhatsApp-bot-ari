@@ -583,6 +583,8 @@ async function processMessageWithDelay(sock, msg, user) {
   // Processa resposta da Comunidade Secreta
   if (user.state === 'comunidade_secreta') {
     console.log('[DEBUG] Entrou no estado comunidade_secreta');
+    console.log('[DEBUG] user.currentStep ANTES de processar:', user.currentStep);
+    console.log('[DEBUG] user.answers ANTES de processar:', user.answers);
     const resposta = normalizeText(messageContent).trim().toUpperCase();
     console.log('[DEBUG] Resposta recebida:', resposta);
     if (resposta === 'A') {
@@ -591,26 +593,45 @@ async function processMessageWithDelay(sock, msg, user) {
       user.state = 'active';
       user.answers = {}; 
       user.currentStep = 0; 
+      console.log('[DEBUG] user.currentStep DEPOIS de zerar:', user.currentStep);
+      console.log('[DEBUG] user.answers DEPOIS de zerar:', user.answers);
       await db.write();
       await simulateHumanTyping(sock, sender);
       await sock.sendMessage(sender, { text: questions[0].text });
       return;
+    } else if (resposta === 'B') {
+      console.log('[DEBUG] Usuário respondeu B, encerrando fluxo');
+      user.state = 'inactive';
+      await db.write();
+      await simulateHumanTyping(sock, sender);
+      await sock.sendMessage(sender, { text: 'Tudo bem! 😊 Quando quiser, estaremos por aqui. Tenha um ótimo dia! ✨👋' });
+      return;
+    } else {
+      console.log('[DEBUG] Resposta não reconhecida no estado comunidade_secreta');
     }
-    // ... existing code ...
   }
 
   // Novo fluxo do questionário
   if (user.state === 'active') {
+    console.log('[DEBUG] Entrou no estado active');
+    console.log('[DEBUG] user.currentStep ANTES da verificação:', user.currentStep);
+    console.log('[DEBUG] user.answers ANTES da verificação:', user.answers);
     // Sempre começa do zero se não for número válido
     if (typeof user.currentStep !== 'number' || user.currentStep < 0 || user.currentStep >= questions.length) {
+      console.log('[DEBUG] user.currentStep inválido, zerando...');
       user.currentStep = 0;
       user.answers = {}; // Limpa respostas antigas se algo estiver inconsistente
+      console.log('[DEBUG] user.currentStep DEPOIS de zerar:', user.currentStep);
       await db.write();
     }
     const step = user.currentStep;
+    console.log('[DEBUG] step final usado:', step);
+    console.log('[DEBUG] questions[step]:', questions[step]);
     if (step < questions.length) {
       const q = questions[step];
       const userResp = messageContent.trim().toUpperCase();
+      console.log('[DEBUG] Processando resposta para questão:', q.key);
+      console.log('[DEBUG] Resposta do usuário:', userResp);
       // Se o usuário digitar S ou B, encerra o fluxo com mensagem personalizada
       if (userResp === 'S' || userResp === 'B') {
         user.state = 'inactive';
@@ -627,14 +648,18 @@ async function processMessageWithDelay(sock, msg, user) {
       }
       user.answers[q.key] = messageContent.trim();
       user.currentStep = step + 1;
+      console.log('[DEBUG] Resposta salva:', user.answers[q.key]);
+      console.log('[DEBUG] user.currentStep DEPOIS de incrementar:', user.currentStep);
       await db.write();
       // Envia a próxima pergunta
       if (user.currentStep < questions.length) {
+        console.log('[DEBUG] Enviando próxima pergunta:', questions[user.currentStep].text);
         await simulateHumanTyping(sock, sender);
         await sock.sendMessage(sender, { text: questions[user.currentStep].text });
         return;
       } else {
         // Finaliza, salva no banco e agradece
+        console.log('[DEBUG] Finalizando questionário');
         await simulateHumanTyping(sock, sender);
         await sock.sendMessage(sender, { text: '⏳ Por favor aguarde, estamos analisando seu perfil... 🔍✨' });
         console.log('[DEBUG] Dados enviados para o banco:', user);

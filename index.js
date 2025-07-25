@@ -666,6 +666,15 @@ async function processMessageWithDelay(sock, msg, user) {
         return;
       }
       
+      // VERIFICA se a pergunta foi enviada antes de processar a resposta
+      if (user.lastQuestionSent && Date.now() - user.lastQuestionSent < 1000) {
+        console.log(`[DEBUG] Pergunta enviada há menos de 1 segundo, ignorando resposta prematura`);
+        await sock.sendMessage(sender, { text: `Aguarde a pergunta aparecer antes de responder. 📝` });
+        return;
+      }
+      
+
+      
       const userResp = messageContent.trim().toUpperCase();
       console.log('[DEBUG] Processando resposta para questão:', q.key);
       console.log('[DEBUG] Resposta do usuário:', userResp);
@@ -706,6 +715,10 @@ async function processMessageWithDelay(sock, msg, user) {
         console.log('[DEBUG] Enviando próxima pergunta:', questions[user.currentStep].text);
         console.log('[DEBUG] step atual:', step);
         console.log('[DEBUG] user.currentStep:', user.currentStep);
+        
+        // Marca o timestamp de quando a pergunta foi enviada
+        user.lastQuestionSent = Date.now();
+        await db.write();
         
         // Envia texto personalizado ANTES da próxima pergunta (exceto para a primeira pergunta)
         if (user.currentStep >= 1) { // user.currentStep >= 1 significa que já respondeu pelo menos uma pergunta

@@ -9,34 +9,38 @@ function capitalizeName(nome) {
 function formatPhone(telefone) {
   console.log('[DEBUG] Telefone original:', telefone);
   
-  // Remove @s.whatsapp.net se existir
-  let cleanPhone = telefone.replace('@s.whatsapp.net', '');
-  console.log('[DEBUG] Telefone sem @s.whatsapp.net:', cleanPhone);
+  // Copia exatamente a lógica que funciona no CSV
+  let telefoneFormatado = telefone || 'Sem telefone';
   
-  // Extrai apenas números
-  const nums = cleanPhone.replace(/\D/g, '');
-  console.log('[DEBUG] Apenas números:', nums);
-  
-  if (nums.length === 13 && nums.startsWith('55')) {
-    // Formato: 554197839788 -> (41) 97839-7888
-    const ddd = nums.slice(2, 4);
-    const parte1 = nums.slice(4, 9);
-    const parte2 = nums.slice(9, 13);
-    const formatted = `(${ddd}) ${parte1}-${parte2}`;
-    console.log('[DEBUG] Telefone formatado:', formatted);
-    return formatted;
-  } else if (nums.length === 11) {
-    // Formato: 41978397888 -> (41) 97839-7888
-    const ddd = nums.slice(0, 2);
-    const parte1 = nums.slice(2, 7);
-    const parte2 = nums.slice(7, 11);
-    const formatted = `(${ddd}) ${parte1}-${parte2}`;
-    console.log('[DEBUG] Telefone formatado:', formatted);
-    return formatted;
+  if (telefoneFormatado.includes('@s.whatsapp.net')) {
+    // Remove o sufixo do WhatsApp
+    telefoneFormatado = telefoneFormatado.replace('@s.whatsapp.net', '');
+    console.log('[DEBUG] Telefone sem @s.whatsapp.net:', telefoneFormatado);
+    
+    // Se começa com 55 (código do Brasil), remove
+    if (telefoneFormatado.startsWith('55')) {
+      telefoneFormatado = telefoneFormatado.substring(2);
+      console.log('[DEBUG] Telefone sem 55:', telefoneFormatado);
+    }
+    
+    // Formata o número
+    if (telefoneFormatado.length === 11) {
+      // Número já tem 11 dígitos (com o 9)
+      const ddd = telefoneFormatado.substring(0, 2);
+      const parte1 = telefoneFormatado.substring(2, 7);
+      const parte2 = telefoneFormatado.substring(7);
+      telefoneFormatado = `(${ddd}) ${parte1}-${parte2}`;
+    } else if (telefoneFormatado.length === 10) {
+      // Número tem 10 dígitos (sem o 9) - adiciona o 9
+      const ddd = telefoneFormatado.substring(0, 2);
+      const parte1 = telefoneFormatado.substring(2, 6);
+      const parte2 = telefoneFormatado.substring(6);
+      telefoneFormatado = `(${ddd}) 9${parte1}-${parte2}`;
+    }
   }
   
-  console.log('[DEBUG] Não conseguiu formatar, retornando original:', telefone);
-  return telefone; // Retorna original se não conseguir formatar
+  console.log('[DEBUG] Telefone formatado final:', telefoneFormatado);
+  return telefoneFormatado;
 }
 
 // Função para deixar respostas em maiúsculo
@@ -56,11 +60,36 @@ function getBrasiliaDateTime() {
 
 async function saveToMySQL(userData) {
   try {
-    console.log('[DEBUG] userData.id (telefone original):', userData.id);
+    // Usa a mesma lógica do CSV para formatar o telefone
+    let telefone = userData.id || 'Sem telefone';
+    if (telefone.includes('@s.whatsapp.net')) {
+      // Remove o sufixo do WhatsApp
+      telefone = telefone.replace('@s.whatsapp.net', '');
+      
+      // Se começa com 55 (código do Brasil), remove
+      if (telefone.startsWith('55')) {
+        telefone = telefone.substring(2);
+      }
+      
+      // Formata o número
+      if (telefone.length === 11) {
+        // Número já tem 11 dígitos (com o 9)
+        const ddd = telefone.substring(0, 2);
+        const parte1 = telefone.substring(2, 7);
+        const parte2 = telefone.substring(7);
+        telefone = `${ddd} ${parte1}-${parte2}`;
+      } else if (telefone.length === 10) {
+        // Número tem 10 dígitos (sem o 9) - adiciona o 9
+        const ddd = telefone.substring(0, 2);
+        const parte1 = telefone.substring(2, 6);
+        const parte2 = telefone.substring(6);
+        telefone = `${ddd} 9${parte1}-${parte2}`;
+      }
+    }
     
     const params = new URLSearchParams();
     params.append('nome', capitalizeName(userData.nome || ''));
-    params.append('telefone', formatPhone(userData.id || ''));
+    params.append('telefone', telefone);
     params.append('q1', upperAll(userData.answers.q1 || ''));
     params.append('q2', upperAll(userData.answers.q2 || ''));
     params.append('q3', upperAll(userData.answers.q3 || ''));
@@ -71,7 +100,7 @@ async function saveToMySQL(userData) {
     params.append('q8', upperAll(userData.answers.q8 || ''));
     params.append('datahora', getBrasiliaDateTime());
 
-    console.log('[DEBUG] Telefone que será enviado:', params.get('telefone'));
+    console.log('[DEBUG] Telefone formatado (mesmo do CSV):', telefone);
 
     await axios.post('https://commerceprime.com.br/resposta_bot.php', params, {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }

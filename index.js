@@ -608,12 +608,6 @@ async function processMessageWithDelay(sock, msg, user) {
   // Novo fluxo do questionário
   if (user.state === 'active') {
     const step = getUserStep(user);
-    // Se for a ativação do fluxo e nenhuma resposta ainda, envia a primeira pergunta
-    if (step === 0 && (normalizedReceived === normalizeText('A - Quero participar!') || normalizedReceived === normalizeText('A'))) {
-      await simulateHumanTyping(sock, sender);
-      await sock.sendMessage(sender, { text: questions[0].text });
-      return;
-    }
     // Salva a resposta recebida na pergunta atual, apenas se for válida
     if (step < questions.length) {
       const q = questions[step];

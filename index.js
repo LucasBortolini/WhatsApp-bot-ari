@@ -634,6 +634,14 @@ async function processMessageWithDelay(sock, msg, user) {
     console.log('[DEBUG] questions[step]:', questions[step]);
     if (step < questions.length) {
       const q = questions[step];
+      
+      // VERIFICA se já respondeu esta pergunta
+      if (user.answers[q.key]) {
+        console.log(`[DEBUG] Usuário já respondeu a pergunta ${q.key}, ignorando mensagem extra`);
+        await sock.sendMessage(sender, { text: `Você já respondeu esta pergunta. Por favor, responda a próxima pergunta que apareceu acima. 📝` });
+        return;
+      }
+      
       const userResp = messageContent.trim().toUpperCase();
       console.log('[DEBUG] Processando resposta para questão:', q.key);
       console.log('[DEBUG] Resposta do usuário:', userResp);

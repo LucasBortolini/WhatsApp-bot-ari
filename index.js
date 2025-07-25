@@ -483,8 +483,7 @@ const exitMsg = (nome) => `Tudo bem ${nome}! 😊\n\nObrigado por ter participad
 // Frases de ativação permitidas
 const activationMessages = [
   "Olá! Gostaria de receber mais informações sobre comunidade de elite, produtos premium e condições especiais! Aguardo seu retorno!",
-  "Não consigo esperar, estou empolgado para garantir o produto!",
-  "quero vivenciar a experiência completa"
+  "Não consigo esperar, estou empolgado para garantir o produto!"
 ];
 
 // Explicação de resposta errada
@@ -563,6 +562,7 @@ async function processMessageWithDelay(sock, msg, user) {
 
   // FLUXO 2: Mensagem de ativação especial para experiência completa
   if (normalizedReceived === normalizeText('quero vivenciar a experiência completa')) {
+    console.log('[DEBUG] Usuário enviou "quero vivenciar a experiência completa", mudando para aguardando_confirmacao');
     const texto = `[NOME], tem algo que só você vai entender...\n\nQuando clicou aqui, não foi só por interesse — foi porque algo lá dentro já sabia: isso é pra mim.\n\nA partir de agora, você não está apenas acessando uma experiência. Está desbloqueando um território reservado para poucas.\n\nE não é exagero — existe um padrão, um cuidado, uma linguagem que só quem sente consegue captar.\n\nEntão aqui vai meu convite direto:\n\nClique no botão abaixo para descobrir o que reservamos pra você.\n\nAh, e quando reservar seu produto premium — porque eu sei que você vai — volta aqui e me diz: "já garanti o meu."\n\nPorque a verdade é que você não foi feita pra seguir o fluxo... e eu sinto que nós duas podemos criar algo ainda mais raro, mais bonito, mais nosso. Não vou te contar agora o que acontece depois disso...\n\nMas posso te prometer uma coisa: as mulheres que mandaram essa mensagem nunca mais olharam pra si mesmas da mesma forma.\n\nVocê chegou até aqui por um motivo. E ele começa agora.\n\n🌹\n\n[@https://commerceprime.com.br/ ]`;
     user.state = 'aguardando_confirmacao';
     await db.write();

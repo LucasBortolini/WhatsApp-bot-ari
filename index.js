@@ -557,10 +557,7 @@ async function processMessageWithDelay(sock, msg, user) {
     return;
   }
 
-  // Se não ativou, responde explicando
-  if (user.state === 'inactive') {
-    await sock.sendMessage(sender, { text: `Para iniciar o atendimento, envie uma das mensagens abaixo:\n\n${activationMessages.map(m => '"' + m + '"').join('\nou\n')}` });
-  }
+
 
   // FLUXO: Aceitar 'já garanti o meu' (com variações/erros) SOMENTE se user.state === 'aguardando_confirmacao'
   if (user.state === 'aguardando_confirmacao' && normalizeText(messageContent).replace(/[^a-zA-Z]/g, '').includes('jagarantiomeu')) {

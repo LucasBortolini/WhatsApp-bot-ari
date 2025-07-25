@@ -637,11 +637,7 @@ async function processMessageWithDelay(sock, msg, user) {
       console.log('[DEBUG] Processando resposta para questão:', q.key);
       console.log('[DEBUG] Resposta do usuário:', userResp);
       
-      // IGNORA a mensagem "A" se ela foi usada para iniciar o questionário
-      if (userResp === 'A' && Object.keys(user.answers).length === 0) {
-        console.log('[DEBUG] Ignorando "A" de ativação do questionário');
-        return;
-      }
+      // REMOVIDO: Não precisamos mais ignorar o "A" porque o fluxo inicial está correto
       // Se o usuário digitar S ou B, encerra o fluxo com mensagem personalizada
       if (userResp === 'S' || userResp === 'B') {
         user.state = 'inactive';

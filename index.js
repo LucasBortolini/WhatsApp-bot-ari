@@ -477,6 +477,33 @@ const approvedMsg = (nome) => `🎉 Parabéns ${nome}!!! Você foi aprovada para
 // Mensagem de saída
 const exitMsg = (nome) => `Tudo bem ${nome}! 😊\n\nObrigado por ter participado. Se quiser voltar, é só enviar a mensagem de ativação novamente! 👋✨`;
 
+// Textos personalizados de humanização entre perguntas
+const humanizationTexts = [
+  // Após Q1
+  "Excelente escolha! Você já começou a nos mostrar o seu DNA de autocuidado.\n\nAgora, vamos explorar um pouco mais o que verdadeiramente conecta você com sua pele? Confie, isso vai te surpreender.",
+  
+  // Após Q2
+  "Impecável. Esse é o tipo de resposta que revela quem sabe o que quer. Estamos alinhando cada detalhe, porque quem caminha conosco merece produtos feitos sob medida para suas ambições. Vamos seguir?",
+  
+  // Após Q3
+  "Textura é um segredo não dito do prazer no autocuidado... e você acabou de nos dar uma pista valiosa. Agora quero te perguntar algo que conecta diretamente com sua essência. Pronta?",
+  
+  // Após Q4
+  "Que escolha refinada! O aroma certo desperta emoções, cria memórias. E no seu caso... temos algo especial surgindo aqui. Permite que eu te conheça ainda mais? Estamos chegando lá.",
+  
+  // Após Q5
+  "Incrível! Isso nos mostra que seu autocuidado não é só uma rotina — é um manifesto pessoal. A próxima pergunta vai lapidar ainda mais o seu perfil exclusivo. Posso prosseguir?",
+  
+  // Após Q6
+  "Informações valiosas, obrigado por compartilhar! Agora sim estamos desenhando um mapa personalizado da sua pele e dos seus desejos. Só mais um pouco, o melhor está chegando...",
+  
+  // Após Q7
+  "Agora você tocou no ponto-chave. Entender o que te incomoda hoje é o primeiro passo para criarmos soluções que realmente façam sentido. Estou quase encerrando — mas essa próxima resposta é ouro puro.",
+  
+  // Após Q8 (substitui o texto de "aguarde, estamos analisando...")
+  "Prontíssimo, tudo registrado! Com essas respostas, conseguimos um raio-x precioso sobre você. Me dê só um instante... estou analisando cuidadosamente seu perfil para uma resposta à sua altura."
+];
+
 // Frases de ativação permitidas
 const activationMessages = [
   "Olá! Gostaria de receber mais informações sobre comunidade de elite, produtos premium e condições especiais! Aguardo seu retorno!"
@@ -667,6 +694,18 @@ async function processMessageWithDelay(sock, msg, user) {
       // Envia a próxima pergunta
       if (user.currentStep < questions.length) {
         console.log('[DEBUG] Enviando próxima pergunta:', questions[user.currentStep].text);
+        
+        // Envia texto personalizado ANTES da próxima pergunta (exceto para a primeira pergunta)
+        if (step > 0) { // step > 0 significa que não é a primeira pergunta
+          const personalizationText = humanizationTexts[step - 1]; // step - 1 porque o array começa em 0
+          console.log('[DEBUG] Enviando texto personalizado após pergunta', step);
+          await simulateHumanTyping(sock, sender);
+          await sock.sendMessage(sender, { text: personalizationText });
+          
+          // Pequena pausa antes da próxima pergunta
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+        
         await simulateHumanTyping(sock, sender);
         await sock.sendMessage(sender, { text: questions[user.currentStep].text });
         return;
@@ -674,7 +713,7 @@ async function processMessageWithDelay(sock, msg, user) {
         // Finaliza, salva no banco e agradece
         console.log('[DEBUG] Finalizando questionário');
         await simulateHumanTyping(sock, sender);
-        await sock.sendMessage(sender, { text: '⏳ Por favor aguarde, estamos analisando seu perfil... 🔍✨' });
+        await sock.sendMessage(sender, { text: humanizationTexts[7] }); // Usa o texto personalizado da Q8
         console.log('[DEBUG] Dados enviados para o banco:', user);
         setTimeout(async () => {
           await simulateHumanTyping(sock, sender);

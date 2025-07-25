@@ -181,7 +181,7 @@ const userMessageCounts = new Map();
 
 // Controle de mensagens sequenciais
 const userMessageQueue = new Map();
-const messageProcessingDelay = 2000; // 2 segundos para processar mensagens
+const messageProcessingDelay = 3000; // 3 segundos para processar mensagens (aumentado)
 
 // Perguntas com opção de sair
 const questions = [
@@ -621,6 +621,7 @@ async function processMessageWithDelay(sock, msg, user) {
     console.log('[DEBUG] Entrou no estado active');
     console.log('[DEBUG] user.currentStep ANTES da verificação:', user.currentStep);
     console.log('[DEBUG] user.answers ANTES da verificação:', user.answers);
+    
     // Sempre começa do zero se não for número válido
     if (typeof user.currentStep !== 'number' || user.currentStep < 0 || user.currentStep >= questions.length) {
       console.log('[DEBUG] user.currentStep inválido, zerando...');
@@ -629,9 +630,11 @@ async function processMessageWithDelay(sock, msg, user) {
       console.log('[DEBUG] user.currentStep DEPOIS de zerar:', user.currentStep);
       await db.write();
     }
+    
     const step = user.currentStep;
     console.log('[DEBUG] step final usado:', step);
     console.log('[DEBUG] questions[step]:', questions[step]);
+    
     if (step < questions.length) {
       const q = questions[step];
       
@@ -646,7 +649,6 @@ async function processMessageWithDelay(sock, msg, user) {
       console.log('[DEBUG] Processando resposta para questão:', q.key);
       console.log('[DEBUG] Resposta do usuário:', userResp);
       
-      // REMOVIDO: Não precisamos mais ignorar o "A" porque o fluxo inicial está correto
       // Se o usuário digitar S, encerra o fluxo com mensagem personalizada
       if (userResp === 'S') {
         user.state = 'inactive';
@@ -656,16 +658,25 @@ async function processMessageWithDelay(sock, msg, user) {
         await sock.sendMessage(sender, { text: `Tudo bem, ${nome}! Você escolheu não continuar. Quando quiser retomar, é só enviar uma mensagem. 👋✨` });
         return;
       }
+      
+      // Valida a resposta
       if (!validateAnswer(q, messageContent)) {
         console.log(`[ERRO] Resposta inválida para a questão ${q.key}: '${messageContent}'`);
         await sock.sendMessage(sender, { text: invalidMsg(q) });
         return;
       }
+      
+      // SALVA a resposta ANTES de incrementar o step
       user.answers[q.key] = normalizeAnswer(q, messageContent);
-      user.currentStep = step + 1;
       console.log('[DEBUG] Resposta salva:', user.answers[q.key]);
+      
+      // INCREMENTA o step DEPOIS de salvar
+      user.currentStep = step + 1;
       console.log('[DEBUG] user.currentStep DEPOIS de incrementar:', user.currentStep);
+      
+      // SALVA no banco ANTES de enviar próxima pergunta
       await db.write();
+      
       // Envia a próxima pergunta
       if (user.currentStep < questions.length) {
         console.log('[DEBUG] Enviando próxima pergunta:', questions[user.currentStep].text);

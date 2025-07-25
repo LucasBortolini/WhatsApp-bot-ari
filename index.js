@@ -587,9 +587,10 @@ async function processMessageWithDelay(sock, msg, user) {
     console.log('[DEBUG] Resposta recebida:', resposta);
     if (resposta === 'A') {
       console.log('[DEBUG] Usuário respondeu A, iniciando questionário');
+      // Limpa tudo antes de iniciar
       user.state = 'active';
-      user.answers = {}; // Limpa respostas anteriores ao iniciar o questionário
-      user.currentStep = 0; // Sempre começa do zero
+      user.answers = {}; 
+      user.currentStep = 0; 
       await db.write();
       await simulateHumanTyping(sock, sender);
       await sock.sendMessage(sender, { text: questions[0].text });
@@ -603,6 +604,7 @@ async function processMessageWithDelay(sock, msg, user) {
     // Sempre começa do zero se não for número válido
     if (typeof user.currentStep !== 'number' || user.currentStep < 0 || user.currentStep >= questions.length) {
       user.currentStep = 0;
+      user.answers = {}; // Limpa respostas antigas se algo estiver inconsistente
       await db.write();
     }
     const step = user.currentStep;
@@ -613,6 +615,7 @@ async function processMessageWithDelay(sock, msg, user) {
       if (userResp === 'S' || userResp === 'B') {
         user.state = 'inactive';
         user.currentStep = undefined;
+        user.answers = {};
         await db.write();
         await sock.sendMessage(sender, { text: `Tudo bem, ${nome}! Você escolheu não continuar. Quando quiser retomar, é só enviar uma mensagem. 👋✨` });
         return;
@@ -643,6 +646,7 @@ async function processMessageWithDelay(sock, msg, user) {
         saveToMySQL(user);
         user.state = 'inactive';
         user.currentStep = undefined;
+        user.answers = {};
         await db.write();
         return;
       }

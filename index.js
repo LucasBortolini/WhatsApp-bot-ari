@@ -635,6 +635,7 @@ async function processMessageWithDelay(sock, msg, user) {
     console.log('[DEBUG] Entrou no estado active');
     console.log('[DEBUG] user.currentStep ANTES da verificação:', user.currentStep);
     console.log('[DEBUG] user.answers ANTES da verificação:', user.answers);
+    console.log('[DEBUG] humanizationTexts disponível:', humanizationTexts.length, 'textos');
     
     // Sempre começa do zero se não for número válido
     if (typeof user.currentStep !== 'number' || user.currentStep < 0 || user.currentStep >= questions.length) {
@@ -694,16 +695,21 @@ async function processMessageWithDelay(sock, msg, user) {
       // Envia a próxima pergunta
       if (user.currentStep < questions.length) {
         console.log('[DEBUG] Enviando próxima pergunta:', questions[user.currentStep].text);
+        console.log('[DEBUG] step atual:', step);
+        console.log('[DEBUG] user.currentStep:', user.currentStep);
         
         // Envia texto personalizado ANTES da próxima pergunta (exceto para a primeira pergunta)
         if (step > 0) { // step > 0 significa que não é a primeira pergunta
           const personalizationText = humanizationTexts[step - 1]; // step - 1 porque o array começa em 0
           console.log('[DEBUG] Enviando texto personalizado após pergunta', step);
+          console.log('[DEBUG] Texto personalizado:', personalizationText);
           await simulateHumanTyping(sock, sender);
           await sock.sendMessage(sender, { text: personalizationText });
           
           // Pequena pausa antes da próxima pergunta
           await new Promise(resolve => setTimeout(resolve, 2000));
+        } else {
+          console.log('[DEBUG] Primeira pergunta, não enviando texto personalizado');
         }
         
         await simulateHumanTyping(sock, sender);

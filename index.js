@@ -181,7 +181,7 @@ const userMessageCounts = new Map();
 
 // Controle de mensagens sequenciais
 const userMessageQueue = new Map();
-const messageProcessingDelay = 3000; // 3 segundos para processar mensagens (aumentado)
+const messageProcessingDelay = 5000; // 5 segundos para processar mensagens (aumentado para evitar bagunça)
 
 // Perguntas com opção de sair
 const questions = [
@@ -656,7 +656,13 @@ async function processMessageWithDelay(sock, msg, user) {
       // VERIFICA se já respondeu esta pergunta
       if (user.answers[q.key]) {
         console.log(`[DEBUG] Usuário já respondeu a pergunta ${q.key}, ignorando mensagem extra`);
-        await sock.sendMessage(sender, { text: `Você já respondeu esta pergunta. Por favor, responda a próxima pergunta que apareceu acima. 📝` });
+        await sock.sendMessage(sender, { text: `Você já respondeu esta pergunta. Por favor, aguarde a próxima pergunta aparecer. 📝` });
+        return;
+      }
+      
+      // VERIFICA se está processando a pergunta correta (evita processar mensagens antigas)
+      if (user.currentStep !== step) {
+        console.log(`[DEBUG] user.currentStep (${user.currentStep}) diferente do step (${step}), ignorando mensagem desatualizada`);
         return;
       }
       
@@ -689,8 +695,11 @@ async function processMessageWithDelay(sock, msg, user) {
       user.currentStep = step + 1;
       console.log('[DEBUG] user.currentStep DEPOIS de incrementar:', user.currentStep);
       
-      // SALVA no banco ANTES de enviar próxima pergunta
+      // SALVA IMEDIATAMENTE para evitar inconsistências
       await db.write();
+      console.log('[DEBUG] Estado salvo no banco para evitar bagunça');
+      
+
       
       // Envia a próxima pergunta
       if (user.currentStep < questions.length) {

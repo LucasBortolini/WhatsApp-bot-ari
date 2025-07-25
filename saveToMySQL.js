@@ -7,21 +7,27 @@ function capitalizeName(nome) {
 
 // Função para formatar telefone para (xx) xxxxx-xxxx
 function formatPhone(telefone) {
+  // Remove @s.whatsapp.net se existir
+  let cleanPhone = telefone.replace('@s.whatsapp.net', '');
+  
   // Extrai apenas números
-  const nums = telefone.replace(/\D/g, '');
+  const nums = cleanPhone.replace(/\D/g, '');
+  
   if (nums.length === 13 && nums.startsWith('55')) {
-    // Remove o 55
+    // Formato: 554197839788 -> (41) 97839-7888
     const ddd = nums.slice(2, 4);
     const parte1 = nums.slice(4, 9);
     const parte2 = nums.slice(9, 13);
     return `(${ddd}) ${parte1}-${parte2}`;
   } else if (nums.length === 11) {
+    // Formato: 41978397888 -> (41) 97839-7888
     const ddd = nums.slice(0, 2);
     const parte1 = nums.slice(2, 7);
     const parte2 = nums.slice(7, 11);
     return `(${ddd}) ${parte1}-${parte2}`;
   }
-  return telefone;
+  
+  return telefone; // Retorna original se não conseguir formatar
 }
 
 // Função para deixar respostas em maiúsculo

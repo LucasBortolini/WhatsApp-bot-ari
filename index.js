@@ -537,6 +537,7 @@ async function processMessageWithDelay(sock, msg, user) {
     // Ativa ou reinicia o fluxo
     user.state = 'active';
     user.answers = {};
+    user.currentStep = 0; // ZERA O PASSO ATUAL
     await db.write();
     await new Promise(resolve => setTimeout(resolve, humanDelay()));
     await simulateHumanTyping(sock, sender);
@@ -598,7 +599,7 @@ async function processMessageWithDelay(sock, msg, user) {
       await db.write();
       await simulateHumanTyping(sock, sender);
       await sock.sendMessage(sender, { text: questions[0].text });
-      return;
+      return; // RETORNA AQUI - não processa o "A" como resposta da pergunta
     } else if (resposta === 'B') {
       console.log('[DEBUG] Usuário respondeu B, encerrando fluxo');
       user.state = 'inactive';
@@ -632,6 +633,12 @@ async function processMessageWithDelay(sock, msg, user) {
       const userResp = messageContent.trim().toUpperCase();
       console.log('[DEBUG] Processando resposta para questão:', q.key);
       console.log('[DEBUG] Resposta do usuário:', userResp);
+      
+      // IGNORA a mensagem "A" se ela foi usada para iniciar o questionário
+      if (userResp === 'A' && Object.keys(user.answers).length === 0) {
+        console.log('[DEBUG] Ignorando "A" de ativação do questionário');
+        return;
+      }
       // Se o usuário digitar S ou B, encerra o fluxo com mensagem personalizada
       if (userResp === 'S' || userResp === 'B') {
         user.state = 'inactive';

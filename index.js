@@ -589,7 +589,7 @@ async function processMessageWithDelay(sock, msg, user) {
       console.log('[DEBUG] Usuário respondeu A, iniciando questionário');
       user.state = 'active';
       user.answers = {}; // Limpa respostas anteriores ao iniciar o questionário
-      user.currentStep = 0; // Adiciona controle explícito do passo
+      user.currentStep = 0; // Sempre começa do zero
       await db.write();
       await simulateHumanTyping(sock, sender);
       await sock.sendMessage(sender, { text: questions[0].text });
@@ -600,8 +600,12 @@ async function processMessageWithDelay(sock, msg, user) {
 
   // Novo fluxo do questionário
   if (user.state === 'active') {
-    // Controle explícito do passo
-    if (typeof user.currentStep !== 'number') user.currentStep = 0;
+    // Só processa se já foi feita a primeira pergunta
+    if (typeof user.currentStep !== 'number' || user.currentStep < 0) {
+      user.currentStep = 0;
+      await db.write();
+      return;
+    }
     const step = user.currentStep;
     if (step < questions.length) {
       const q = questions[step];

@@ -472,7 +472,7 @@ const byeMsg = (nome) => `💖 **Muito obrigado pela sua atenção, ${nome}!**\n
 
 // Mensagem de análise e aprovação
 const analyzingMsg = '⏳ **Por favor aguarde, estamos analisando seu perfil...** 🔍✨';
-const approvedMsg = (nome) => `🎉 **Parabéns ${nome}!!!** Você foi aprovada para a nossa comunidade VIP, entre agora pelo link abaixo e fique por dentro de tudo sobre autocuidado, tudo em primeira mão! 💎\n\n👉 **www.whatsapp.com.br/grupo** 🔗`;
+const approvedMsg = (nome) => `🎉 **Parabéns ${nome}!!!** Você foi aprovada para a nossa comunidade VIP, entre agora pelo link abaixo e fique por dentro de tudo sobre autocuidado, tudo em primeira mão! 💎\n\n👉 www.whatsapp.com.br/grupo 🔗`;
 
 // Mensagem de saída
 const exitMsg = (nome) => `😊 **Tudo bem ${nome}!**\n\nObrigado por ter participado. Se quiser voltar, é só enviar a mensagem de ativação novamente! 👋✨`;

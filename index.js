@@ -600,11 +600,10 @@ async function processMessageWithDelay(sock, msg, user) {
 
   // Novo fluxo do questionário
   if (user.state === 'active') {
-    // Só processa se já foi feita a primeira pergunta
-    if (typeof user.currentStep !== 'number' || user.currentStep < 0) {
+    // Sempre começa do zero se não for número válido
+    if (typeof user.currentStep !== 'number' || user.currentStep < 0 || user.currentStep >= questions.length) {
       user.currentStep = 0;
       await db.write();
-      return;
     }
     const step = user.currentStep;
     if (step < questions.length) {

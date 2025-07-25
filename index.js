@@ -465,11 +465,7 @@ function getUserName(msg, sock) {
   return msg.key.remoteJid.split('@')[0];
 }
 
-// Convite para comunidade elite
-const eliteInvite = {
-  text: (nome) => `Olá, ${nome}! 👋✨\n\nQue prazer ter você conosco. Você acaba de conquistar um lugar na nossa Lista Premium de Autocuidado, um seleto espaço reservado para mulheres que enxergam o autocuidado como um verdadeiro ato de poder e sofisticação. 💎\n\nAgora, me diga com sinceridade... você gostaria de ser avaliada para ingressar na nossa Comunidade de Elite? 🤔\n\nEstamos reunindo um grupo extremamente restrito e criterioso, onde cada participante terá um papel direto na criação dos próximos lançamentos — além de receber acesso antecipado, condições exclusivas e experiências que o público comum jamais terá. 🌟\n\nLá dentro, você descobrirá que o autocuidado vai muito além de um produto — é uma cultura, um legado. 🏆\n\nA - Sim, quero participar! 🚀\nB - Não, obrigado(a). 😊\n\nResponda apenas com a letra A ou B.`,
-  options: ['A', 'B']
-};
+
 
 // Mensagem de agradecimento e encerramento
 const byeMsg = (nome) => `Muito obrigado pela sua atenção, ${nome}! 💖\n\nQuando quiser, estaremos por aqui. Tenha um ótimo dia! ✨👋`;
@@ -483,8 +479,7 @@ const exitMsg = (nome) => `Tudo bem ${nome}! 😊\n\nObrigado por ter participad
 
 // Frases de ativação permitidas
 const activationMessages = [
-  "Olá! Gostaria de receber mais informações sobre comunidade de elite, produtos premium e condições especiais! Aguardo seu retorno!",
-  "Não consigo esperar, estou empolgado para garantir o produto!"
+  "Olá! Gostaria de receber mais informações sobre comunidade de elite, produtos premium e condições especiais! Aguardo seu retorno!"
 ];
 
 // Explicação de resposta errada
@@ -527,25 +522,6 @@ async function processMessageWithDelay(sock, msg, user) {
 
   // Normaliza mensagens para comparação
   const normalizedReceived = normalizeText(messageContent);
-  // Verifica se a mensagem ativa o bot
-  const activationMatch = activationMessages.some(msg => normalizedReceived === normalizeText(msg));
-  const keywords = ['comunidade de elite', 'produtos premium', 'condicoes especiais'];
-  const hasKeywords = keywords.every(keyword => normalizedReceived.includes(normalizeText(keyword)));
-  const shouldActivate = activationMatch || hasKeywords ||
-    normalizedReceived.includes('comunidade de elite') ||
-    normalizedReceived.includes('produtos premium') ||
-    normalizedReceived.includes('condicoes especiais');
-  if (shouldActivate) {
-    // Ativa ou reinicia o fluxo
-    user.state = 'active';
-    user.answers = {};
-    user.currentStep = 0; // ZERA O PASSO ATUAL
-    await db.write();
-    await new Promise(resolve => setTimeout(resolve, humanDelay()));
-    await simulateHumanTyping(sock, sender);
-    await sock.sendMessage(sender, { text: eliteInvite.text(nome) });
-    return;
-  }
   // Se não ativou, responde explicando
   if (user.state === 'inactive') {
     await sock.sendMessage(sender, { text: `Para iniciar o atendimento, envie uma das mensagens abaixo:\n\n${activationMessages.map(m => '"' + m + '"').join('\nou\n')}` });

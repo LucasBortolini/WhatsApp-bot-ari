@@ -181,7 +181,7 @@ const userMessageCounts = new Map();
 
 // Controle de mensagens sequenciais
 const userMessageQueue = new Map();
-const messageProcessingDelay = 5000; // 5 segundos para processar mensagens (aumentado para evitar bagunça)
+const messageProcessingDelay = 8000; // 8 segundos para processar mensagens (aumentado para evitar bagunça)
 
 // Perguntas com opção de sair
 const questions = [
@@ -660,18 +660,15 @@ async function processMessageWithDelay(sock, msg, user) {
         return;
       }
       
-      // VERIFICA se está processando a pergunta correta (evita processar mensagens antigas)
+      // VERIFICA se o estado está consistente (evita processar mensagens fora de ordem)
       if (user.currentStep !== step) {
-        console.log(`[DEBUG] user.currentStep (${user.currentStep}) diferente do step (${step}), ignorando mensagem desatualizada`);
+        console.log(`[DEBUG] Estado inconsistente: user.currentStep=${user.currentStep}, step=${step}, ignorando mensagem`);
         return;
       }
       
-      // VERIFICA se a pergunta foi enviada antes de processar a resposta
-      if (user.lastQuestionSent && Date.now() - user.lastQuestionSent < 1000) {
-        console.log(`[DEBUG] Pergunta enviada há menos de 1 segundo, ignorando resposta prematura`);
-        await sock.sendMessage(sender, { text: `Aguarde a pergunta aparecer antes de responder. 📝` });
-        return;
-      }
+
+      
+
       
 
       
@@ -716,9 +713,7 @@ async function processMessageWithDelay(sock, msg, user) {
         console.log('[DEBUG] step atual:', step);
         console.log('[DEBUG] user.currentStep:', user.currentStep);
         
-        // Marca o timestamp de quando a pergunta foi enviada
-        user.lastQuestionSent = Date.now();
-        await db.write();
+
         
         // Envia texto personalizado ANTES da próxima pergunta (exceto para a primeira pergunta)
         if (user.currentStep >= 1) { // user.currentStep >= 1 significa que já respondeu pelo menos uma pergunta

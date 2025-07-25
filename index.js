@@ -522,12 +522,15 @@ async function processMessageWithDelay(sock, msg, user) {
 
   // Normaliza mensagens para comparação
   const normalizedReceived = normalizeText(messageContent);
-  // Se não ativou, responde explicando
-  if (user.state === 'inactive') {
-    await sock.sendMessage(sender, { text: `Para iniciar o atendimento, envie uma das mensagens abaixo:\n\n${activationMessages.map(m => '"' + m + '"').join('\nou\n')}` });
-  }
-
-  // FLUXO 1: Mensagem de ativação especial
+  
+  // LOGS DE DEBUG PARA FLUXO 1
+  console.log('[DEBUG] Mensagem recebida original:', messageContent);
+  console.log('[DEBUG] Mensagem normalizada:', normalizedReceived);
+  console.log('[DEBUG] Comparando com:', normalizeText('Não consigo esperar, estou empolgada para garantir o produto!'));
+  console.log('[DEBUG] São iguais?', normalizedReceived === normalizeText('Não consigo esperar, estou empolgada para garantir o produto!'));
+  console.log('[DEBUG] Estado atual:', user.state);
+  
+  // FLUXO 1: Mensagem de ativação especial (DEVE VIR ANTES DE TUDO)
   if (normalizedReceived === normalizeText('Não consigo esperar, estou empolgada para garantir o produto!')) {
     console.log('[DEBUG] Usuário enviou "Não consigo esperar, estou empolgada para garantir o produto!", mudando para aguardando_confirmacao');
     const texto = `[NOME], tem algo que só você vai entender...\n\nQuando clicou aqui, não foi só por interesse — foi porque algo lá dentro já sabia: isso é pra mim.\n\nA partir de agora, você não está apenas acessando uma experiência. Está desbloqueando um território reservado para poucas.\n\nE não é exagero — existe um padrão, um cuidado, uma linguagem que só quem sente consegue captar.\n\nEntão aqui vai meu convite direto:\n\nClique no botão abaixo para descobrir o que reservamos pra você.\n\nAh, e quando reservar seu produto premium — porque eu sei que você vai — volta aqui e me diz: "já garanti o meu."\n\nPorque a verdade é que você não foi feita pra seguir o fluxo... e eu sinto que nós duas podemos criar algo ainda mais raro, mais bonito, mais nosso. Não vou te contar agora o que acontece depois disso...\n\nMas posso te prometer uma coisa: as mulheres que mandaram essa mensagem nunca mais olharam pra si mesmas da mesma forma.\n\nVocê chegou até aqui por um motivo. E ele começa agora.\n\n🌹\n\n[@https://commerceprime.com.br/ ]`;
@@ -539,6 +542,8 @@ async function processMessageWithDelay(sock, msg, user) {
   }
 
   // FLUXO 2: Mensagem de ativação especial para experiência completa
+  console.log('[DEBUG] Comparando com Fluxo 2:', normalizeText('quero vivenciar a experiência completa'));
+  console.log('[DEBUG] São iguais Fluxo 2?', normalizedReceived === normalizeText('quero vivenciar a experiência completa'));
   if (normalizedReceived === normalizeText('quero vivenciar a experiência completa')) {
     console.log('[DEBUG] Usuário enviou "quero vivenciar a experiência completa", mudando para aguardando_confirmacao');
     const texto = `[NOME], tem algo que só você vai entender...\n\nQuando clicou aqui, não foi só por interesse — foi porque algo lá dentro já sabia: isso é pra mim.\n\nA partir de agora, você não está apenas acessando uma experiência. Está desbloqueando um território reservado para poucas.\n\nE não é exagero — existe um padrão, um cuidado, uma linguagem que só quem sente consegue captar.\n\nEntão aqui vai meu convite direto:\n\nClique no botão abaixo para descobrir o que reservamos pra você.\n\nAh, e quando reservar seu produto premium — porque eu sei que você vai — volta aqui e me diz: "já garanti o meu."\n\nPorque a verdade é que você não foi feita pra seguir o fluxo... e eu sinto que nós duas podemos criar algo ainda mais raro, mais bonito, mais nosso. Não vou te contar agora o que acontece depois disso...\n\nMas posso te prometer uma coisa: as mulheres que mandaram essa mensagem nunca mais olharam pra si mesmas da mesma forma.\n\nVocê chegou até aqui por um motivo. E ele começa agora.\n\n🌹\n\n[@https://commerceprime.com.br/ ]`;
@@ -547,6 +552,24 @@ async function processMessageWithDelay(sock, msg, user) {
     await simulateHumanTyping(sock, sender);
     await sock.sendMessage(sender, { text: texto.replace('[NOME]', nome) });
     return;
+  }
+
+  // FLUXO 2: Mensagem de ativação especial para experiência completa
+  console.log('[DEBUG] Comparando com Fluxo 2:', normalizeText('quero vivenciar a experiência completa'));
+  console.log('[DEBUG] São iguais Fluxo 2?', normalizedReceived === normalizeText('quero vivenciar a experiência completa'));
+  if (normalizedReceived === normalizeText('quero vivenciar a experiência completa')) {
+    console.log('[DEBUG] Usuário enviou "quero vivenciar a experiência completa", mudando para aguardando_confirmacao');
+    const texto = `[NOME], tem algo que só você vai entender...\n\nQuando clicou aqui, não foi só por interesse — foi porque algo lá dentro já sabia: isso é pra mim.\n\nA partir de agora, você não está apenas acessando uma experiência. Está desbloqueando um território reservado para poucas.\n\nE não é exagero — existe um padrão, um cuidado, uma linguagem que só quem sente consegue captar.\n\nEntão aqui vai meu convite direto:\n\nClique no botão abaixo para descobrir o que reservamos pra você.\n\nAh, e quando reservar seu produto premium — porque eu sei que você vai — volta aqui e me diz: "já garanti o meu."\n\nPorque a verdade é que você não foi feita pra seguir o fluxo... e eu sinto que nós duas podemos criar algo ainda mais raro, mais bonito, mais nosso. Não vou te contar agora o que acontece depois disso...\n\nMas posso te prometer uma coisa: as mulheres que mandaram essa mensagem nunca mais olharam pra si mesmas da mesma forma.\n\nVocê chegou até aqui por um motivo. E ele começa agora.\n\n🌹\n\n[@https://commerceprime.com.br/ ]`;
+    user.state = 'aguardando_confirmacao';
+    await db.write();
+    await simulateHumanTyping(sock, sender);
+    await sock.sendMessage(sender, { text: texto.replace('[NOME]', nome) });
+    return;
+  }
+
+  // Se não ativou, responde explicando
+  if (user.state === 'inactive') {
+    await sock.sendMessage(sender, { text: `Para iniciar o atendimento, envie uma das mensagens abaixo:\n\n${activationMessages.map(m => '"' + m + '"').join('\nou\n')}` });
   }
 
   // FLUXO: Aceitar 'já garanti o meu' (com variações/erros) SOMENTE se user.state === 'aguardando_confirmacao'

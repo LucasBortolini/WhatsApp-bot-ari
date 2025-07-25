@@ -589,48 +589,43 @@ async function processMessageWithDelay(sock, msg, user) {
       console.log('[DEBUG] Usuário respondeu A, iniciando questionário');
       user.state = 'active';
       user.answers = {}; // Limpa respostas anteriores ao iniciar o questionário
+      user.currentStep = 0; // Adiciona controle explícito do passo
       await db.write();
       await simulateHumanTyping(sock, sender);
       await sock.sendMessage(sender, { text: questions[0].text });
       return;
-    } else if (resposta === 'B') {
-      console.log('[DEBUG] Usuário respondeu B, encerrando fluxo');
-      user.state = 'inactive';
-      await db.write();
-      await simulateHumanTyping(sock, sender);
-      await sock.sendMessage(sender, { text: 'Tudo bem! 😊 Quando quiser, estaremos por aqui. Tenha um ótimo dia! ✨👋' });
-      return;
-    } else {
-      console.log('[DEBUG] Resposta não reconhecida no estado comunidade_secreta');
     }
+    // ... existing code ...
   }
 
   // Novo fluxo do questionário
   if (user.state === 'active') {
-    const step = getUserStep(user);
-    // Salva a resposta recebida na pergunta atual, apenas se for válida
+    // Controle explícito do passo
+    if (typeof user.currentStep !== 'number') user.currentStep = 0;
+    const step = user.currentStep;
     if (step < questions.length) {
       const q = questions[step];
       const userResp = messageContent.trim().toUpperCase();
       // Se o usuário digitar S ou B, encerra o fluxo com mensagem personalizada
       if (userResp === 'S' || userResp === 'B') {
         user.state = 'inactive';
+        user.currentStep = undefined;
         await db.write();
         await sock.sendMessage(sender, { text: `Tudo bem, ${nome}! Você escolheu não continuar. Quando quiser retomar, é só enviar uma mensagem. 👋✨` });
         return;
       }
-      // Remover o encerramento por B aqui, pois só deve encerrar na saudação
       if (!validateAnswer(q, messageContent)) {
         console.log(`[ERRO] Resposta inválida para a questão ${q.key}: '${messageContent}'`);
         await sock.sendMessage(sender, { text: invalidMsg(q) });
         return;
       }
       user.answers[q.key] = messageContent.trim();
+      user.currentStep = step + 1;
       await db.write();
       // Envia a próxima pergunta
-      if (step + 1 < questions.length) {
+      if (user.currentStep < questions.length) {
         await simulateHumanTyping(sock, sender);
-        await sock.sendMessage(sender, { text: questions[step + 1].text });
+        await sock.sendMessage(sender, { text: questions[user.currentStep].text });
         return;
       } else {
         // Finaliza, salva no banco e agradece
@@ -644,6 +639,7 @@ async function processMessageWithDelay(sock, msg, user) {
         saveToCSV(user);
         saveToMySQL(user);
         user.state = 'inactive';
+        user.currentStep = undefined;
         await db.write();
         return;
       }

@@ -638,8 +638,8 @@ async function processMessageWithDelay(sock, msg, user) {
       console.log('[DEBUG] Resposta do usuário:', userResp);
       
       // REMOVIDO: Não precisamos mais ignorar o "A" porque o fluxo inicial está correto
-      // Se o usuário digitar S ou B, encerra o fluxo com mensagem personalizada
-      if (userResp === 'S' || userResp === 'B') {
+      // Se o usuário digitar S, encerra o fluxo com mensagem personalizada
+      if (userResp === 'S') {
         user.state = 'inactive';
         user.currentStep = undefined;
         user.answers = {};

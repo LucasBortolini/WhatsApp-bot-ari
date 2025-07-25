@@ -588,6 +588,7 @@ async function processMessageWithDelay(sock, msg, user) {
     if (resposta === 'A') {
       console.log('[DEBUG] Usuário respondeu A, iniciando questionário');
       user.state = 'active';
+      user.answers = {}; // Limpa respostas anteriores ao iniciar o questionário
       await db.write();
       await simulateHumanTyping(sock, sender);
       await sock.sendMessage(sender, { text: questions[0].text });
@@ -617,11 +618,11 @@ async function processMessageWithDelay(sock, msg, user) {
     if (step < questions.length) {
       const q = questions[step];
       const userResp = messageContent.trim().toUpperCase();
-      // Se o usuário digitar S, encerra o fluxo com mensagem personalizada
-      if (userResp === 'S') {
+      // Se o usuário digitar S ou B, encerra o fluxo com mensagem personalizada
+      if (userResp === 'S' || userResp === 'B') {
         user.state = 'inactive';
         await db.write();
-        await sock.sendMessage(sender, { text: `Tudo bem, ${nome}! Você saiu do atendimento, mas pode voltar quando quiser. ✨👋` });
+        await sock.sendMessage(sender, { text: `Tudo bem, ${nome}! Você escolheu não continuar. Quando quiser retomar, é só enviar uma mensagem. 👋✨` });
         return;
       }
       // Remover o encerramento por B aqui, pois só deve encerrar na saudação

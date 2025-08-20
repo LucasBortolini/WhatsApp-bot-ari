@@ -1,14 +1,30 @@
-🔗 LINK DO WHATSAPP PARA ATIVAÇÃO DO BOT:
+🔗 LINKS DO WHATSAPP COM CACHE INTEGRADO:
 
-Link original (com codificação):
-https://wa.me/5516991252033?text=Olá!%20Gostaria%20de%20receber%20mais%20informações%20sobre%20comunidade%20de%20elite,%20produtos%20premium%20e%20condições%20especiais!%20Aguardo%20seu%20retorno!
+📱 EXPERIÊNCIA COMPLETA (com cache):
+https://commerceprime.com.br/?cache=Y2FkYXN0cm9fY29tcGxldG8=&user=completo
 
-Link otimizado (sem codificação):
-https://wa.me/5516991252033?text=Olá! Gostaria de receber mais informações sobre comunidade de elite, produtos premium e condições especiais! Aguardo seu retorno!
+🔗 RECEBER LINK (com cache):
+https://commerceprime.com.br/?cache=Y2FkYXN0cm9fbGluaw==&user=link
 
-📋 MENSAGEM QUE DEVE APARECER NO WHATSAPP:
-"Olá! Gostaria de receber mais informações sobre comunidade de elite, produtos premium e condições especiais! Aguardo seu retorno!"
+📋 MENSAGENS QUE DEVEM APARECER NO WHATSAPP:
 
-🎯 O BOT AGORA ACEITA:
-1. Mensagem exata (com ou sem codificação URL)
-2. Mensagens que contenham as palavras-chave: "comunidade de elite", "produtos premium", "condições especiais" 
+Para "Experiência Completa":
+"quero vivenciar a experiência completa
+
+🔗 Link para voltar ao site:
+https://commerceprime.com.br/?cache=Y2FkYXN0cm9fY29tcGxldG8=&user=completo"
+
+Para "Receber Link":
+"quero receber o link
+
+🔗 Link para voltar ao site:
+https://commerceprime.com.br/?cache=Y2FkYXN0cm9fbGluaw==&user=link"
+
+🎯 COMO FUNCIONA:
+1. Usuário preenche formulário e escolhe uma opção
+2. Cache é salvo automaticamente
+3. WhatsApp abre com mensagem + link especial
+4. Link especial contém parâmetros de cache
+5. Quando usuário clica no link, site detecta cache e NÃO mostra formulário
+
+⚠️ IMPORTANTE: Esses links são ESTÁTICOS e não mudam! 
